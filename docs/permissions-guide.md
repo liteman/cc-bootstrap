@@ -8,16 +8,40 @@ Permissions allow you to pre-approve specific commands or command patterns. When
 
 ## How to Configure
 
-Add permissions to your Claude Code settings. The format is typically:
+This template includes a `.claude/settings.json` file with recommended safe permissions pre-configured. You can:
+
+1. **Use the template as-is** - The included permissions are low-risk and suitable for most development workflows
+2. **Add project-specific permissions** - Edit `.claude/settings.json` to add build/test commands specific to your project
+3. **Override locally** - Create `.claude/settings.local.json` for personal preferences (this file is gitignored)
+
+### Settings Files
+
+- **`.claude/settings.json`** - Project template (committed to git, shared with team)
+- **`.claude/settings.local.json`** - Local overrides (gitignored, personal preferences)
+
+### Permission Format
+
+Permissions use the pattern:
 ```
 Bash(command:pattern)
 ```
 
-## Recommended Low-Risk Permissions
+Example:
+```json
+{
+  "permissions": {
+    "allow": ["Bash(ls:*)", "Bash(git status:*)"],
+    "deny": [],
+    "ask": []
+  }
+}
+```
 
-### macOS/Linux
+## Pre-Configured Permissions
 
-#### File System Operations (Read-Only)
+This template's `.claude/settings.json` includes these safe permissions:
+
+### File System Operations (Read-Only)
 ```
 Bash(ls:*)
 Bash(pwd:*)
@@ -25,10 +49,11 @@ Bash(tree:*)
 Bash(file:*)
 Bash(which:*)
 Bash(whereis:*)
+Bash(mkdir:*)
+Bash(mkdir -p:*)
 ```
-Safe because: These only read file system information, cannot modify anything.
 
-#### Git Operations (Read-Only)
+### Git Operations (Read-Only)
 ```
 Bash(git status:*)
 Bash(git diff:*)
@@ -39,7 +64,20 @@ Bash(git remote:*)
 Bash(git config --get:*)
 Bash(git config --list:*)
 ```
-Safe because: These only read repository state. Note: Write operations like `git commit`, `git push` are intentionally excluded.
+
+### System Information
+```
+Bash(date:*)
+Bash(uname:*)
+Bash(hostname:*)
+Bash(whoami:*)
+```
+
+## Additional Low-Risk Permissions
+
+You may want to add these permissions based on your project needs:
+
+### macOS/Linux
 
 #### Package Manager Information
 ```

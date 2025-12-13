@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(mkdir -p:*)",
+      "Bash(ls:*)",
+      "Bash(pwd:*)",
+      "Bash(tree:*)",
+      "Bash(file:*)",
+      "Bash(which:*)",
+      "Bash(whereis:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote:*)",
+      "Bash(git config --get:*)",
+      "Bash(git config --list:*)",
+      "Bash(date:*)",
+      "Bash(uname:*)",
+      "Bash(hostname:*)",
+      "Bash(whoami:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
