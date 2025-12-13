@@ -1,0 +1,222 @@
+# Claude Code Permissions Guide
+
+This guide suggests low-risk commands to add to Claude Code's permissions, allowing Claude to run them without prompting for approval each time.
+
+## What Are Permissions?
+
+Permissions allow you to pre-approve specific commands or command patterns. When configured, Claude can execute these without interrupting your workflow for approval.
+
+## How to Configure
+
+Add permissions to your Claude Code settings. The format is typically:
+```
+Bash(command:pattern)
+```
+
+## Recommended Low-Risk Permissions
+
+### macOS/Linux
+
+#### File System Operations (Read-Only)
+```
+Bash(ls:*)
+Bash(pwd:*)
+Bash(tree:*)
+Bash(file:*)
+Bash(which:*)
+Bash(whereis:*)
+```
+Safe because: These only read file system information, cannot modify anything.
+
+#### Git Operations (Read-Only)
+```
+Bash(git status:*)
+Bash(git diff:*)
+Bash(git log:*)
+Bash(git show:*)
+Bash(git branch:*)
+Bash(git remote:*)
+Bash(git config --get:*)
+Bash(git config --list:*)
+```
+Safe because: These only read repository state. Note: Write operations like `git commit`, `git push` are intentionally excluded.
+
+#### Package Manager Information
+```
+Bash(npm list:*)
+Bash(npm outdated:*)
+Bash(yarn list:*)
+Bash(pip list:*)
+Bash(pip show:*)
+Bash(cargo --version:*)
+Bash(bundle list:*)
+```
+Safe because: These only query package information without installing or modifying.
+
+#### Build & Test (Project-Specific)
+```
+Bash(npm run build:*)
+Bash(npm test:*)
+Bash(npm run lint:*)
+Bash(yarn build:*)
+Bash(yarn test:*)
+Bash(make test:*)
+Bash(pytest:*)
+Bash(cargo test:*)
+Bash(go test:*)
+```
+Moderate risk: These execute project code. Only add if you trust your test scripts. Good for CI-like workflows.
+
+#### System Information
+```
+Bash(date:*)
+Bash(uname:*)
+Bash(hostname:*)
+Bash(whoami:*)
+```
+Safe because: Read-only system information.
+
+#### Directory Creation (Low-Risk)
+```
+Bash(mkdir:*)
+Bash(mkdir -p:*)
+```
+Low risk: Only creates directories. Claude already has this pre-approved by default for certain patterns.
+
+### Windows
+
+#### File System Operations
+```
+Bash(dir:*)
+Bash(where:*)
+```
+Safe because: Read-only file system information.
+
+#### Git Operations (Read-Only)
+```
+Bash(git status:*)
+Bash(git diff:*)
+Bash(git log:*)
+Bash(git show:*)
+Bash(git branch:*)
+```
+Same as Unix: Only read operations.
+
+#### Package Manager Information
+```
+Bash(npm list:*)
+Bash(npm outdated:*)
+Bash(choco list:*)
+```
+Safe because: Query-only operations.
+
+## Commands to AVOID Auto-Approving
+
+### High-Risk Commands
+Never auto-approve these without careful consideration:
+
+```
+# Dangerous - Can delete files
+Bash(rm:*)
+Bash(del:*)
+
+# Dangerous - Can modify files
+Bash(mv:*)
+Bash(cp:*)
+
+# Dangerous - Can change permissions
+Bash(chmod:*)
+Bash(chown:*)
+
+# Dangerous - Can modify git history
+Bash(git push:*)
+Bash(git push --force:*)
+Bash(git reset --hard:*)
+
+# Dangerous - Can install software
+Bash(npm install:*)
+Bash(pip install:*)
+Bash(apt install:*)
+Bash(brew install:*)
+
+# Dangerous - Executes arbitrary commands
+Bash(curl:* | sh)
+Bash(wget:* | sh)
+```
+
+## Recommended Starter Configuration
+
+For a typical development workflow, consider starting with:
+
+### Minimal Safe Set
+```
+Bash(mkdir:*)
+Bash(git status:*)
+Bash(git diff:*)
+Bash(git log:*)
+Bash(npm test:*)
+Bash(npm run build:*)
+```
+
+### Expanded Development Set
+Add to the above:
+```
+Bash(ls:*)
+Bash(pwd:*)
+Bash(which:*)
+Bash(git branch:*)
+Bash(git show:*)
+Bash(npm list:*)
+Bash(npm outdated:*)
+```
+
+## Project-Specific Permissions
+
+For specific project types, you might add:
+
+### Node.js Projects
+```
+Bash(npm run lint:*)
+Bash(npm run format:*)
+Bash(npm run typecheck:*)
+```
+
+### Python Projects
+```
+Bash(pytest:*)
+Bash(python -m pytest:*)
+Bash(flake8:*)
+Bash(black --check:*)
+```
+
+### Rust Projects
+```
+Bash(cargo build:*)
+Bash(cargo test:*)
+Bash(cargo check:*)
+Bash(cargo clippy:*)
+```
+
+### Go Projects
+```
+Bash(go test:*)
+Bash(go build:*)
+Bash(go fmt:*)
+Bash(go vet:*)
+```
+
+## Best Practices
+
+1. **Start Conservative**: Begin with minimal permissions and add more as needed
+2. **Project-Specific**: Configure permissions per project, not globally
+3. **Review Regularly**: Periodically review your permissions list
+4. **Understand Commands**: Only approve commands you understand
+5. **Test First**: Run commands manually before auto-approving them
+6. **Consider CI/CD**: If it runs safely in CI, it's probably safe to auto-approve
+
+## Notes
+
+- Claude Code already has some built-in permissions like `mkdir:*` for specific patterns
+- Permissions are case-sensitive
+- Wildcards (`*`) match any arguments
+- More specific patterns are safer than broad wildcards
