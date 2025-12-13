@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 [Describe the purpose and scope of this project in 2-3 sentences]
 
+## Best Practices
+
+- **Use TDD**: When implementing features, prefer test-driven development - write tests first, then implementation
+- **Multiple Options**: When facing architectural or implementation decisions, suggest 3-5 approaches with pros/cons
+- **Linters & Hooks**: Once project language is established, proactively suggest and configure appropriate linters and git hooks
+
 ## Development Commands
 
 ### Setup
@@ -47,10 +53,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Important Conventions
 
 [Document any project-specific conventions, patterns, or constraints that Claude should follow when modifying code]
-- When making implementation plans, save new files in docs/planning/
-- When performning analysis, save the analysis in docs/analysis/
 
-## Optional Tools
+### Documentation Organization
+
+- **Implementation plans**: Save in `docs/planning/`
+- **Code analysis**: Save in `docs/analysis/`
+
+## Setup & Configuration
 
 ### Git Configuration
 For optimal git workflow with Claude Code, see [docs/git-setup.md](docs/git-setup.md) for recommended git configuration settings.
@@ -60,6 +69,3 @@ For GitHub operations like creating pull requests and managing issues, Claude Co
 
 ### Permissions
 To streamline your workflow, you can pre-approve safe commands for Claude Code to run without prompting. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended low-risk permissions organized by platform.
-
-- Once the user selects a language for the codebase, suggest appropriate linters and offer to install and configure git-hooks to use the linters
-- For optimimum code development workflows, when possible use a TDD approach
