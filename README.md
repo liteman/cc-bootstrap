@@ -1,288 +1,358 @@
 # Claude Code Bootstrap Template
 
-A starter template for projects using [Claude Code](https://claude.ai/code), pre-configured with documentation and best practices for optimal AI-assisted development.
+A comprehensive template for projects using [Claude Code](https://claude.ai/code), pre-configured with documentation structures, workflows, and best practices for efficient AI-assisted development.
 
-## What's Included
+## Purpose
 
-This template provides:
+This template provides a complete foundation for working with Claude Code, whether you're starting a new project or adding Claude Code to an existing codebase. It includes:
 
-- **CLAUDE.md** - Primary guidance file for Claude Code when working in this repository
-- **Setup Guides** - Documentation for git configuration, GitHub CLI, and permissions
-- **Best Practices** - Recommended workflows and conventions for Claude Code
+- **Structured documentation** for guiding Claude Code through your codebase
+- **Workflow guides** for common development tasks (features, bugs, refactoring)
+- **Convention templates** for code style, testing, and git practices
+- **GitHub Actions** for automated documentation audits
+- **Custom commands** for context management and documentation maintenance
 
 ## Quick Start
 
+### For New Projects
+
 ```bash
-# Use this template on GitHub or clone it
-git clone <repository-url> my-project
+# Clone or use this template
+git clone https://github.com/liteman/cc-bootstrap.git my-project
 cd my-project
+rm -rf .git && git init
 
-# Start Claude Code and try:
-# "Initialize a TypeScript Node.js project with Jest and ESLint.
-#  Set up TDD workflow with watch mode for tests."
+# Start Claude Code
+claude
+
+# Initialize your project with a prompt like:
 ```
 
-## Getting Started
+**Suggested prompt for new projects:**
+```
+Analyze this Claude Code bootstrap template and help me initialize a new
+[TypeScript/Python/Go/etc.] project. Please:
+1. Set up the project structure and package management
+2. Configure linting and formatting tools
+3. Set up a testing framework with TDD workflow
+4. Update CLAUDE.md with the actual project details, removing template placeholders
+5. Create module documentation in .claude/modules/ for the initial components
+6. Set up git hooks for code quality
+```
 
-### 1. Clone or Use This Template
+### For Existing Projects
 
 ```bash
-# Clone this template
-git clone <repository-url>
-cd cc-bootstrap
+# Clone just the documentation structure
+git clone https://github.com/liteman/cc-bootstrap.git temp-bootstrap
+cp -r temp-bootstrap/.claude your-project/
+cp -r temp-bootstrap/.github your-project/
+cp temp-bootstrap/CLAUDE.md your-project/
+rm -rf temp-bootstrap
 
-# Or create a new repository from this template on GitHub
+cd your-project
+claude
 ```
 
-### 2. Initialize Your Project
-
-Start Claude Code and use one of the prompts below to begin setting up your project.
-
-### 3. Customize CLAUDE.md
-
-Update `CLAUDE.md` with your project-specific information as you develop.
-
-## Useful Starter Prompts
-
-When starting a new project with Claude Code, try these prompts:
-
-### Project Initialization
-
+**Suggested prompt for existing projects:**
 ```
-Initialize a [language/framework] project with a standard structure.
-Set up package management, create a basic Hello World example,
-and configure appropriate linting and formatting tools.
+I've added the Claude Code bootstrap template to this existing project. Please:
+1. Analyze the current codebase structure and architecture
+2. Update CLAUDE.md with accurate project information:
+   - Tech stack and dependencies
+   - Build, test, and lint commands
+   - Architecture overview and key components
+3. Create module documentation in .claude/modules/ for the main components
+4. Update .claude/architecture.md with the actual system design
+5. Identify any conventions and document them in .claude/conventions/
 ```
 
-Examples:
-- "Initialize a TypeScript Node.js project with ESLint and Prettier"
-- "Initialize a Python project with Poetry, pytest, and Black"
-- "Initialize a Rust project with standard Cargo structure"
-- "Initialize a Next.js project with TypeScript and Tailwind CSS"
+---
 
-### Testing Setup
+## What's Included
+
+### Project Structure
 
 ```
-Set up a testing framework for this project with:
-- Unit test structure and example tests
-- Test running scripts (normal and watch mode)
-- Code coverage reporting
-- TDD-friendly workflow
-Then update CLAUDE.md with the testing commands.
+.
+├── CLAUDE.md                    # Primary guidance file for Claude Code
+├── .claude/                     # Detailed documentation structure
+│   ├── architecture.md          # System architecture template
+│   ├── AUDIT_COMMAND.md         # Quick reference for /audit command
+│   ├── modules/                 # Module-specific documentation
+│   │   └── _template.md         # Template for new modules
+│   ├── workflows/               # Development workflow guides
+│   │   ├── feature-development.md
+│   │   ├── bug-fixes.md
+│   │   ├── refactoring.md
+│   │   └── documentation-audit.md
+│   ├── conventions/             # Coding standards and practices
+│   │   ├── code-style.md
+│   │   ├── testing.md
+│   │   └── git-workflow.md
+│   ├── audit-reports/           # Generated audit reports
+│   │   └── TEMPLATE.md
+│   └── settings.local.json      # Claude Code project settings
+├── .github/                     # GitHub Actions and scripts
+│   ├── workflows/
+│   │   └── documentation-audit.yml.template
+│   ├── scripts/
+│   │   └── audit-docs.py
+│   ├── audit-config.yml
+│   ├── README.md
+│   └── SETUP.md
+└── docs/                        # Project documentation
+    ├── git-setup.md             # Git configuration guide
+    ├── gh-cli-setup.md          # GitHub CLI setup
+    ├── permissions-guide.md     # Claude Code permissions
+    ├── response-style-guidelines.md  # Personal response preferences
+    ├── planning/                # Implementation plans
+    └── analysis/                # Code analysis documents
 ```
 
-### Test-Driven Development (TDD)
+---
 
-```
-I want to add [feature description] using TDD. Please:
-1. Write failing tests that define the expected behavior
-2. Show me the test failures
-3. Implement the minimal code to make tests pass
-4. Refactor if needed while keeping tests green
-5. Run the full test suite to ensure nothing broke
-```
+## Documentation Structure
 
-Example:
-```
-I want to add a user authentication module using TDD.
-Start by writing tests for login validation, then implement it.
-```
+### CLAUDE.md
 
-### Git and GitHub Setup
+The main configuration file that Claude Code reads when starting a session. It contains:
 
-```
-Initialize git in this repository and set up:
-- Appropriate .gitignore for [language/framework]
-- Pre-commit hooks for linting and formatting
-- GitHub Actions workflow for CI
-Then create an initial commit.
-```
+- **Project Overview**: Tech stack, structure, and key directories
+- **Custom Commands**: `/audit`, `/verify-context`, `/load-module`, `/load-workflow`
+- **Development Commands**: Build, test, lint commands for quick reference
+- **Critical Rules**: Project-wide constraints and requirements
+- **Best Practices**: TDD approach, multiple options for decisions
 
-### Documentation
+### .claude/ Directory
 
-```
-Analyze the current project structure and update CLAUDE.md with:
-- Accurate development commands (build, test, lint)
-- High-level architecture overview
-- Key components and their interactions
-```
+Detailed documentation that Claude loads on-demand to reduce context overhead:
 
-### Code Quality
+#### modules/
+Module-specific documentation for different parts of your codebase. Use `_template.md` to create new module docs. Each module doc includes:
+- Architecture and component structure
+- Data models and API references
+- Common patterns and integration points
+- Testing and troubleshooting guides
 
-```
-Set up code quality tools for this [language] project including:
-- Linter with recommended rules
-- Code formatter
-- Pre-commit hooks to run these automatically
-- Git hooks configuration
-Configure these and update CLAUDE.md with the commands.
-```
+**Usage**: Tell Claude `/load-module auth` to load authentication module context.
 
-### CI/CD Pipeline
+#### workflows/
+Step-by-step guides for common development tasks:
 
-```
-Create a GitHub Actions workflow that:
-- Runs on pull requests and pushes to main
-- Installs dependencies
-- Runs linting
-- Runs tests
-- Reports coverage
-Explain the workflow after creating it.
-```
+| Workflow | Purpose |
+|----------|---------|
+| `feature-development.md` | Adding new features with proper planning, testing, and documentation |
+| `bug-fixes.md` | Systematic bug investigation, fixing, and regression prevention |
+| `refactoring.md` | Safe refactoring with test coverage and incremental changes |
+| `documentation-audit.md` | Comprehensive review of all `.claude/` documentation |
 
-### Understanding Existing Code
+**Usage**: Tell Claude `/load-workflow bug-fixes` before starting bug work.
 
-If you're adding Claude Code to an existing project:
+#### conventions/
+Coding standards and practices for consistency:
 
-```
-Analyze this codebase and create a comprehensive CLAUDE.md that includes:
-- Project overview and purpose
-- Development commands (build, test, lint)
-- Architecture and key components
-- Important conventions and patterns
-- Any non-obvious structural decisions
-```
+| Convention | Covers |
+|------------|--------|
+| `code-style.md` | Naming, file organization, comments, error handling |
+| `testing.md` | Test structure, mocking, coverage, TDD practices |
+| `git-workflow.md` | Branching, commits, PRs, code review process |
 
-### Creating Features
+#### audit-reports/
+Generated reports from the `/audit` command. Track documentation health over time.
 
-```
-I want to add [feature description]. First:
-1. Analyze the current architecture
-2. Propose an implementation approach
-3. Ask any clarifying questions
-4. Then implement it using TDD (tests first, then implementation)
+### Custom Commands
+
+These commands are defined in CLAUDE.md and help manage context efficiently:
+
+| Command | Purpose |
+|---------|---------|
+| `/verify-context` | Show what documentation Claude has loaded |
+| `/load-module <name>` | Load specific module documentation |
+| `/load-workflow <name>` | Load workflow guide before starting work |
+| `/read-all-context` | Load all documentation (use sparingly) |
+| `/audit` | Run comprehensive documentation audit |
+
+---
+
+## GitHub Actions
+
+### Documentation Audit Workflow
+
+Automated documentation audits using Claude API. The workflow is provided as a template to prevent it from running in the bootstrap repo itself.
+
+**To enable:**
+```bash
+mv .github/workflows/documentation-audit.yml.template .github/workflows/documentation-audit.yml
 ```
 
-Or for quick iterations:
-```
-Add [feature] with comprehensive tests. Use TDD approach where practical.
+**Features:**
+- Monthly scheduled audits
+- PR checks when documentation changes
+- Manual trigger option
+- Automatic issue creation for critical findings
+- PR comments with audit results
+
+**Setup:**
+1. Enable the workflow (rename `.template` to `.yml`)
+2. Add `ANTHROPIC_API_KEY` to GitHub Secrets
+3. Customize `audit-config.yml` as needed
+
+See [.github/SETUP.md](.github/SETUP.md) for detailed instructions.
+
+---
+
+## Claude Code Settings
+
+### .claude/settings.local.json
+
+Project-level settings for Claude Code permissions. Pre-configured with safe defaults:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npx:*)"
+    ]
+  }
+}
 ```
 
-### Exploring Options
+Customize based on your project's needs. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended permissions by platform.
 
-When you need to make architectural or implementation decisions:
+### Response Style Guidelines
 
+Personal preferences for how Claude responds are kept separate from project configuration. See [docs/response-style-guidelines.md](docs/response-style-guidelines.md) for guidelines you can add to your user-specific `~/.claude/CLAUDE.md`.
+
+---
+
+## Useful Prompts
+
+### Project Setup
+
+**Initialize a new project:**
 ```
-I need to [add feature/solve problem/refactor code].
-Please suggest 3-5 different approaches with:
-- Brief description of each approach
+Initialize a TypeScript Node.js project with:
+- ESLint and Prettier configured
+- Jest for testing with watch mode
+- Pre-commit hooks for linting
+- Update CLAUDE.md with actual commands
+- Create initial module docs in .claude/modules/
+```
+
+**Analyze existing codebase:**
+```
+Analyze this codebase and:
+1. Map out the architecture in .claude/architecture.md
+2. Create module docs for each major component
+3. Document the build/test/lint commands in CLAUDE.md
+4. Identify coding conventions and add to .claude/conventions/
+```
+
+### Development Workflows
+
+**Start a new feature:**
+```
+I want to add [feature]. Please:
+1. Load the relevant workflow: /load-workflow feature-development
+2. Create a feature plan
+3. Implement using TDD (tests first)
+4. Update documentation as needed
+```
+
+**Fix a bug:**
+```
+There's a bug: [description]. Please:
+1. Load the bug fix workflow
+2. Reproduce and write a failing test
+3. Investigate root cause
+4. Fix and verify
+5. Add regression tests
+```
+
+**Refactor code:**
+```
+I want to refactor [component] because [reason]. Please:
+1. Load the refactoring workflow
+2. Ensure test coverage exists
+3. Plan the refactoring approach
+4. Make incremental changes, keeping tests green
+```
+
+### Documentation Maintenance
+
+**Run documentation audit:**
+```
+/audit
+```
+
+**Update module documentation:**
+```
+The [module] has changed significantly. Please:
+1. Load the current module doc
+2. Analyze the actual code
+3. Update the documentation to match reality
+4. Check for any broken references
+```
+
+### Architecture Decisions
+
+**Get implementation options:**
+```
+I need to [add feature/solve problem]. Please suggest 3-5 approaches with:
+- Description of each approach
 - Pros and cons
-- Complexity estimate
+- Complexity assessment
 - Your recommendation
-
-Then I'll choose one and we can implement it.
 ```
 
-Examples:
-```
-I need to add user authentication. Suggest 3-5 approaches
-(JWT, sessions, OAuth, etc.) with pros/cons for each.
-```
+---
 
-```
-We're having performance issues with [component].
-Suggest 3-5 optimization strategies with trade-offs.
-```
+## Tips for Effective Use
 
-```
-I need to refactor the data layer. Propose 3-5 architectural
-patterns we could use and recommend the best fit.
-```
+1. **Start sessions with context**: Tell Claude what you're working on so it can suggest relevant docs to load
+2. **Use workflows**: Load the appropriate workflow before starting a task
+3. **Keep docs updated**: Run `/audit` periodically and update docs when code changes
+4. **Leverage TDD**: The workflows emphasize test-driven development for better results
+5. **Customize templates**: Replace placeholder text in templates with your actual project details
+6. **Use module docs**: Create focused documentation for each major component
+7. **Trust the structure**: The documentation hierarchy is designed to minimize context while maximizing relevance
 
-## Common Development Workflows
+---
 
-### Adding a New Feature (TDD Approach)
-```
-I want to add [feature]. Using TDD:
-1. First write comprehensive tests for the expected behavior
-2. Run tests to confirm they fail
-3. Implement the feature to make tests pass
-4. Refactor for code quality
-5. Update CLAUDE.md if architecture changed
-6. Create a git commit with descriptive message
-```
-
-### Debugging an Issue
-```
-There's a bug: [describe the issue]. Please:
-1. Write a test that reproduces the bug
-2. Analyze the code to find the root cause
-3. Fix the bug
-4. Verify the test now passes
-5. Run full test suite to ensure no regressions
-```
-
-For complex issues:
-```
-We have a problem: [describe issue and symptoms].
-Suggest 3-5 possible root causes with:
-- How to verify each hypothesis
-- Potential fixes
-- Impact assessment
-Then we'll investigate the most likely causes.
-```
-
-### Refactoring Code
-```
-The [component/module] needs refactoring because [reason]. Please:
-1. First ensure there are tests covering current behavior
-2. Propose a refactoring approach
-3. Refactor incrementally, keeping tests green
-4. Improve test coverage if needed
-```
-
-### Code Review Preparation
-```
-I'm ready to create a PR. Please:
-1. Run the full test suite
-2. Run linting and fix any issues
-3. Check for any console.log or debug code
-4. Review the git diff for any unintended changes
-5. Create a PR with a clear description of changes
-```
-
-## Documentation
-
-- **[CLAUDE.md](CLAUDE.md)** - Main guidance for Claude Code
-- **[Git Setup Guide](docs/git-setup.md)** - Recommended git configuration
-- **[GitHub CLI Setup](docs/gh-cli-setup.md)** - Configure gh CLI for PR creation
-- **[Permissions Guide](docs/permissions-guide.md)** - Safe commands to pre-approve
-
-### Documentation Structure
-
-This template uses a structured documentation approach:
-- `docs/` - General documentation and guides
-- `docs/planning/` - Implementation plans and design documents
-- `docs/analysis/` - Code analysis and architecture documentation
-
-Claude Code will automatically save planning documents and analysis to these directories when working on complex tasks.
-
-## Tips for Working with Claude Code
-
-1. **Be Specific**: Clear, detailed prompts yield better results
-2. **Use TDD**: Request test-driven development for better code quality and design
-3. **Get Options**: Ask for 3-5 suggestions when facing decisions - better choices come from comparing alternatives
-4. **Iterate**: Start with planning, then implement incrementally
-5. **Use CLAUDE.md**: Keep it updated so Claude understands your project
-6. **Leverage Git**: Claude can create commits and PRs - use it!
-7. **Trust the Process**: Claude respects git hooks and follows best practices
-8. **Watch Mode**: Ask Claude to set up test watch mode for rapid TDD cycles
-9. **Ask Questions**: Claude can ask clarifying questions - encourage it!
-
-## Customization
+## Customization Checklist
 
 After using this template:
 
-1. Update `CLAUDE.md` with your project specifics
-2. Remove placeholder sections that don't apply
-3. Add project-specific conventions and patterns
-4. Configure permissions for your workflow
-5. Update this README with project-specific information
+- [ ] Update `CLAUDE.md` with actual project details
+- [ ] Replace `[PROJECT NAME]` and other placeholders
+- [ ] Create module docs for your main components
+- [ ] Update `architecture.md` with your system design
+- [ ] Customize conventions for your team's practices
+- [ ] Configure permissions in `settings.local.json`
+- [ ] Enable GitHub Actions if desired
+- [ ] Add project-specific workflows if needed
+
+---
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [CLAUDE.md](CLAUDE.md) | Main Claude Code configuration |
+| [docs/git-setup.md](docs/git-setup.md) | Git configuration recommendations |
+| [docs/gh-cli-setup.md](docs/gh-cli-setup.md) | GitHub CLI setup for PR creation |
+| [docs/permissions-guide.md](docs/permissions-guide.md) | Safe commands to pre-approve |
+| [docs/response-style-guidelines.md](docs/response-style-guidelines.md) | Personal response preferences |
+| [.github/SETUP.md](.github/SETUP.md) | GitHub Actions configuration |
+
+---
 
 ## Contributing
 
-[Add contribution guidelines for your project]
+Contributions are welcome! Please feel free to submit issues or pull requests.
 
 ## License
 
-[Add your license information]
+MIT License - feel free to use this template for any project.
