@@ -1,0 +1,176 @@
+name: Documentation Audit
+
+on:
+  # Run on schedule (monthly)
+  schedule:
+    - cron: '0 9 1 * *'  # 9 AM UTC on the 1st of every month
+  
+  # Allow manual trigger
+  workflow_dispatch:
+  
+  # Run on PRs that modify documentation
+  pull_request:
+    paths:
+      - '.claude/**'
+      - 'CLAUDE.md'
+      - 'docs/**'
+
+jobs:
+  audit-documentation:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install anthropic python-dotenv pyyaml
+      
+      - name: Run documentation audit
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python .github/scripts/audit-docs.py
+      
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-report-${{ github.run_number }}
+          path: .claude/audit-reports/*.md
+          retention-days: 90
+      
+      - name: Check for critical issues
+        id: check_critical
+        run: |
+          if [ -f .claude/audit-reports/latest-audit.md ]; then
+            CRITICAL_COUNT=$(grep -c "^### Critical" .claude/audit-reports/latest-audit.md || echo "0")
+            echo "critical_count=$CRITICAL_COUNT" >> $GITHUB_OUTPUT
+            echo "Found $CRITICAL_COUNT critical issues"
+          fi
+      
+      - name: Create issue for critical findings
+        if: steps.check_critical.outputs.critical_count > 0
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = '.claude/audit-reports/latest-audit.md';
+            const report = fs.readFileSync(reportPath, 'utf8');
+            
+            // Extract summary from report
+            const summaryMatch = report.match(/## Executive Summary\n\n([\s\S]*?)\n\n---/);
+            const summary = summaryMatch ? summaryMatch[1] : 'See full report';
+            
+            // Extract critical issues
+            const criticalMatch = report.match(/### Critical Issues[\s\S]*?(?=###|---)/);
+            const criticalIssues = criticalMatch ? criticalMatch[0] : 'See full report';
+            
+            const issueBody = `
+            # 🚨 Documentation Audit - Critical Issues Found
+            
+            An automated documentation audit has identified critical issues that need immediate attention.
+            
+            ${summary}
+            
+            ## Critical Issues
+            
+            ${criticalIssues}
+            
+            ## Full Report
+            
+            Download the full audit report from the [workflow artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+            
+            ## Next Steps
+            
+            1. Review the critical issues above
+            2. Download the full report for details
+            3. Fix critical issues immediately
+            4. Schedule time for high-priority fixes
+            
+            ---
+            *This issue was automatically created by the Documentation Audit workflow.*
+            `;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Documentation Audit - ${new Date().toISOString().split('T')[0]} - Critical Issues Found`,
+              body: issueBody,
+              labels: ['documentation', 'critical', 'automated-audit']
+            });
+      
+      - name: Comment on PR (if applicable)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = '.claude/audit-reports/latest-audit.md';
+            
+            if (!fs.existsSync(reportPath)) {
+              console.log('No audit report found');
+              return;
+            }
+            
+            const report = fs.readFileSync(reportPath, 'utf8');
+            
+            // Extract relevant sections
+            const summaryMatch = report.match(/## Executive Summary\n\n([\s\S]*?)\n\n---/);
+            const summary = summaryMatch ? summaryMatch[1] : 'Audit completed';
+            
+            const criticalMatch = report.match(/### Critical Issues.*?\n\n([\s\S]*?)(?=###|$)/);
+            const hasCritical = criticalMatch && criticalMatch[1].trim().length > 0;
+            
+            const highMatch = report.match(/### High Priority Issues.*?\n\n([\s\S]*?)(?=###|$)/);
+            const hasHigh = highMatch && highMatch[1].trim().length > 0;
+            
+            const emoji = hasCritical ? '🚨' : hasHigh ? '⚠️' : '✅';
+            
+            const comment = `
+            ${emoji} **Documentation Audit Results**
+            
+            ${summary}
+            
+            ${hasCritical ? '### 🚨 Critical Issues Found\n\nPlease review the critical issues in the audit report before merging.\n' : ''}
+            ${hasHigh ? '### ⚠️ High Priority Issues\n\nConsider addressing high-priority issues identified in the audit.\n' : ''}
+            ${!hasCritical && !hasHigh ? '### ✅ No Critical Issues\n\nDocumentation looks good!\n' : ''}
+            
+            <details>
+            <summary>View Audit Summary</summary>
+            
+            Download the full audit report from the workflow artifacts for detailed findings and recommendations.
+            
+            </details>
+            `;
+            
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+      
+      - name: Commit audit report (scheduled runs only)
+        if: github.event_name == 'schedule'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          if [ -f .claude/audit-reports/latest-audit.md ]; then
+            DATE=$(date +%Y-%m-%d)
+            cp .claude/audit-reports/latest-audit.md .claude/audit-reports/${DATE}-audit.md
+            git add .claude/audit-reports/${DATE}-audit.md
+            git commit -m "docs: add automated documentation audit for ${DATE}" || echo "No changes to commit"
+            git push || echo "No changes to push"
+          fi
