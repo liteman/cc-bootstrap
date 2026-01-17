@@ -2,6 +2,8 @@
 
 > **When to read**: Before fixing any bug
 
+> **With Superpowers**: If you have the [superpowers](https://github.com/obra/superpowers) plugin installed, the systematic-debugging skill provides a comprehensive 4-phase root cause analysis process. Use this workflow alongside superpowers for project-specific context and patterns.
+
 ## Overview
 
 This workflow ensures bugs are fixed thoroughly with proper root cause analysis and prevention measures.

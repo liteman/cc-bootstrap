@@ -61,7 +61,7 @@ For coding standards and practices:
 - **Git Workflow**: `.claude/conventions/git-workflow.md`
 
 ### Documentation Organization
-- **Implementation plans**: Save in `docs/planning/`
+- **Implementation plans**: Save in `docs/plans/`
 - **Code analysis**: Save in `docs/analysis/`
 
 ---
@@ -318,3 +318,33 @@ For personal response style preferences, see [docs/response-style-guidelines.md]
 - **Conventions**: See `.claude/conventions/`
 
 **Remember**: Start each session by loading the right context!
+
+---
+
+## Recommended Plugins
+
+### Superpowers (Optional but Recommended)
+
+[Superpowers](https://github.com/obra/superpowers) is a skills library that provides disciplined development workflows. It complements this template:
+
+- **This template** provides WHAT Claude needs to know (documentation, context)
+- **Superpowers** provides HOW Claude should work (methodology, workflows)
+
+**Installation:**
+```bash
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+```
+
+**Key Skills:**
+- `/brainstorm` - Interactive design refinement
+- `/write-plan` - Create detailed implementation plans
+- `/execute-plan` - Execute plans with checkpoints
+- TDD enforcement ("Iron Law")
+- Systematic debugging
+- Two-stage code review
+
+**How it works with this template:**
+When both are installed, superpowers handles the development methodology (brainstorming, planning, TDD enforcement) while this template provides project-specific context through modules, workflows, and conventions.
+
+See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide.

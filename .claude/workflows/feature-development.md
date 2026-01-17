@@ -2,6 +2,8 @@
 
 > **When to read**: Before starting any new feature work
 
+> **With Superpowers**: If you have the [superpowers](https://github.com/obra/superpowers) plugin installed, use `/brainstorm` before this workflow. Superpowers will guide the design phase through Socratic questioning, then use this workflow for project-specific context. The superpowers TDD skill enforces test-first development throughout implementation.
+
 ## Overview
 
 This workflow ensures consistent, high-quality feature development across the project.

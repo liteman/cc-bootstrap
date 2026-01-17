@@ -112,6 +112,28 @@ I've added the Claude Code bootstrap template to this existing project. Please:
 
 ---
 
+## Companion Plugin: Superpowers
+
+This template works excellently with the [superpowers](https://github.com/obra/superpowers) plugin by Jesse Vincent, which provides disciplined development workflows.
+
+| This Template | Superpowers |
+|---------------|-------------|
+| Project knowledge organization | Development methodology |
+| Documentation structure | Behavioral workflows |
+| `/audit`, `/verify-context`, `/load-module` | `/brainstorm`, `/write-plan`, `/execute-plan` |
+
+Together they create a complete development environment where Claude knows both WHAT your project contains and HOW to work on it effectively.
+
+**Quick Install:**
+```bash
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+```
+
+See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed setup and usage.
+
+---
+
 ## Documentation Structure
 
 ### CLAUDE.md
@@ -333,6 +355,7 @@ After using this template:
 - [ ] Configure permissions in `settings.local.json`
 - [ ] Enable GitHub Actions if desired
 - [ ] Add project-specific workflows if needed
+- [ ] Consider installing superpowers plugin for enhanced workflows
 
 ---
 

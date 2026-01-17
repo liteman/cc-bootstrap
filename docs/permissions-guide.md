@@ -243,6 +243,19 @@ Bash(go fmt:*)
 Bash(go vet:*)
 ```
 
+## Superpowers Plugin
+
+If you're using the [superpowers](https://github.com/obra/superpowers) plugin alongside this template, no additional permissions are typically required. The plugin's skills, commands, and hooks work within Claude Code's existing permission model.
+
+The plugin uses:
+- Slash commands (`/brainstorm`, `/write-plan`, `/execute-plan`) - no special permissions needed
+- Session hooks - managed by Claude Code's plugin system
+- Skill tool invocations - handled internally
+
+If you're developing custom skills that use external tools, you may need to add specific permissions for those tools.
+
+See [superpowers-integration.md](superpowers-integration.md) for more details on using superpowers with this template.
+
 ## Best Practices
 
 1. **Start Conservative**: Begin with minimal permissions and add more as needed
