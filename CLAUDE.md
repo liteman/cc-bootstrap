@@ -302,7 +302,7 @@ For GitHub operations like creating pull requests and managing issues, Claude Co
 To streamline your workflow, you can pre-approve safe commands for Claude Code to run without prompting. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended low-risk permissions organized by platform.
 
 ### GitHub Actions
-For automated documentation audits, see [.github/README.md](.github/README.md) and [.github/SETUP.md](.github/SETUP.md) for setup instructions. Note: The workflow file is provided as `.yml.template` and must be renamed to `.yml` to enable it.
+For automated documentation audits, see [.github/ACTIONS.md](.github/ACTIONS.md) and [.github/SETUP.md](.github/SETUP.md) for setup instructions. Note: The workflow file is provided as `.yml.template` and must be renamed to `.yml` to enable it.
 
 ### Response Style Guidelines
 For personal response style preferences, see [docs/response-style-guidelines.md](docs/response-style-guidelines.md) for guidelines you can add to your user-specific `~/.claude/CLAUDE.md`.
