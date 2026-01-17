@@ -9,7 +9,7 @@ Answer the direct request thoroughly, then provide supplemental information and 
 ## Response Structure
 
 1. **Direct Answer First**: Provide a complete, thorough response to what was explicitly asked
-2. **Supplemental Section**: If relevant, add a brief section titled "Additional options:" or "You might also want to:"
+2. **Supplemental Section**: If relevant, add a brief section titled "Additional options:" or "You might also want to:" - number these for easier reference
 3. **Format**: Use a simple bullet list (3-5 items max) covering:
    - **Analysis suggestions**: Deeper examination of code, patterns, or issues
    - **Enhancement suggestions**: Improvements, refactoring, or optimizations
