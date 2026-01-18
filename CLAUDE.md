@@ -347,4 +347,4 @@ For personal response style preferences, see [docs/response-style-guidelines.md]
 **How it works with this template:**
 When both are installed, superpowers handles the development methodology (brainstorming, planning, TDD enforcement) while this template provides project-specific context through modules, workflows, and conventions.
 
-See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide.
+**Security Note:** Superpowers uses aggressive instruction patterns. For proprietary projects, consider version pinning and reviewing updates before adoption. See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide and security considerations.

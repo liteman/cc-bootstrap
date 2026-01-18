@@ -42,6 +42,61 @@ Together they create a complete development environment where Claude knows both 
 /plugin update superpowers
 ```
 
+## Security Considerations
+
+### Version Pinning (Recommended)
+
+Superpowers uses aggressive instruction patterns designed to override Claude's default judgment (e.g., `<EXTREMELY-IMPORTANT>` tags, "NO EXCEPTIONS" enforcement). While these serve legitimate purposes (enforcing TDD), they warrant careful review before adoption.
+
+**Recommendation:** Pin to a specific version rather than using auto-update:
+
+1. **Fork the repository** to your organization's GitHub
+2. **Pin to a known-good commit** in your fork
+3. **Review changes before updating** by comparing diffs
+
+```bash
+# Instead of auto-updating from upstream:
+/plugin update superpowers
+
+# Use your organization's fork:
+/plugin marketplace add your-org/superpowers-marketplace
+/plugin install superpowers@your-org-marketplace
+```
+
+### Review Process for Updates
+
+Before pulling new plugin updates into a proprietary project:
+
+1. **Review the diff** - Check `RELEASE-NOTES.md` and git diff for changes
+2. **Examine new/modified skills** - Look for changes to instruction patterns
+3. **Test in isolation** - Create a test project to verify behavior
+4. **Check hook changes** - Review `hooks/session-start.sh` for context injection changes
+
+```bash
+# Compare versions before updating
+cd /path/to/your/superpowers-fork
+git fetch upstream
+git diff main upstream/main -- skills/ hooks/ agents/
+```
+
+### What to Watch For
+
+| Pattern | Location | Purpose |
+|---------|----------|---------|
+| `<EXTREMELY-IMPORTANT>` tags | hooks, skills | Priority override injection |
+| `YOU MUST`, `NO EXCEPTIONS` | SKILL.md files | Behavior enforcement |
+| Anti-rationalization tables | TDD, verification skills | Closes "loopholes" in reasoning |
+| Subagent prompts | `*-prompt.md` files | Instructions for spawned agents |
+
+### Skill Priority Hierarchy
+
+Be aware of the override order:
+```
+Project skills > Personal skills > Superpowers skills
+```
+
+Your project's `.claude/` documentation takes precedence, allowing you to override superpowers behavior if needed.
+
 ## How They Work Together
 
 ### Session Flow
