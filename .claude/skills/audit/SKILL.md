@@ -2,7 +2,7 @@
 name: audit
 description: Perform a comprehensive review of .claude/ documentation to identify outdated information, duplicates, missing docs, and generate actionable recommendations.
 argument-hint: [quick|full]
-disable-model-invocation: true
+model: haiku
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 ---
 

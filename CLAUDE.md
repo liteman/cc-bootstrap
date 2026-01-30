@@ -36,6 +36,21 @@ Type `/verify-context` anytime to see what guides I have loaded.
 - **Multiple Options**: When facing architectural or implementation decisions, suggest 3-5 approaches with pros/cons
 - **Linters & Hooks**: Once project language is established, proactively suggest and configure appropriate linters and git hooks
 
+### Model Selection
+
+Use the appropriate model for each phase of work to balance quality and cost:
+
+| Phase | Model | Rationale |
+|-------|-------|-----------|
+| **Planning** (architecture, design, complex reasoning) | **Opus** | Deep reasoning for design decisions, trade-off analysis, and plan creation |
+| **Implementation** (writing code, editing files, executing plans) | **Sonnet** | Fast, capable code generation with good cost efficiency |
+| **Review** (audits, code review, documentation review) | **Haiku** | Quick, cost-effective analysis for structured review tasks |
+
+**When spawning sub-agents via the Task tool**, set the `model` parameter accordingly:
+- `model: "opus"` — Plan mode, architectural decisions, complex debugging
+- `model: "sonnet"` — Code implementation, file edits, test writing
+- `model: "haiku"` — Audit scans, code review, linting checks
+
 ---
 
 ## Documentation Structure
