@@ -32,6 +32,9 @@ temp/
 # Claude Code local settings (user-specific, not shared)
 .claude/settings.local.json
 
+# Plugin marketplace (cloned locally, not part of this repo)
+claude-plugins-marketplace/
+
 # Audit reports (keep template)
 .claude/audit-reports/*
 !.claude/audit-reports/TEMPLATE.md
