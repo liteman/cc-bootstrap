@@ -6,10 +6,12 @@ This script uses Claude API to perform comprehensive documentation audits
 that can be run in CI/CD pipelines (GitHub Actions).
 
 Usage:
-    python audit-docs.py [--output-file FILEPATH] [--config CONFIG_FILE]
+    python audit-docs.py [--output-file FILEPATH] [--config CONFIG_FILE] [--api-key-file FILEPATH]
 
-Environment Variables:
-    ANTHROPIC_API_KEY: Required. Your Anthropic API key.
+API Key Resolution (first match wins):
+    1. --api-key-file argument pointing to a file containing the key
+    2. ANTHROPIC_API_KEY_FILE environment variable pointing to a file
+    3. ANTHROPIC_API_KEY environment variable (fallback for CI/CD)
 
 Requirements:
     pip install anthropic python-dotenv pyyaml
@@ -364,10 +366,64 @@ Exit Code Recommendation: 2
             return 2
 
 
+def _resolve_api_key(api_key_file: Optional[str] = None) -> str:
+    """Resolve the API key from file or environment.
+
+    Resolution order:
+        1. --api-key-file CLI argument
+        2. ANTHROPIC_API_KEY_FILE env var (path to file)
+        3. ANTHROPIC_API_KEY env var (direct value, fallback for CI/CD)
+    """
+    # 1. Explicit file path from CLI
+    if api_key_file:
+        return _read_key_file(api_key_file)
+
+    # 2. File path from environment variable
+    key_file_path = os.environ.get('ANTHROPIC_API_KEY_FILE')
+    if key_file_path:
+        return _read_key_file(key_file_path)
+
+    # 3. Direct environment variable (CI/CD fallback)
+    api_key = os.environ.get('ANTHROPIC_API_KEY')
+    if api_key:
+        return api_key.strip()
+
+    print("❌ Error: No API key configured.", file=sys.stderr)
+    print("\nProvide the key using one of these methods (in priority order):", file=sys.stderr)
+    print("  1. --api-key-file /path/to/key-file", file=sys.stderr)
+    print("  2. ANTHROPIC_API_KEY_FILE=/path/to/key-file", file=sys.stderr)
+    print("  3. ANTHROPIC_API_KEY=sk-ant-... (CI/CD only)", file=sys.stderr)
+    sys.exit(1)
+
+
+def _read_key_file(path: str) -> str:
+    """Read and validate an API key from a file."""
+    if not os.path.isfile(path):
+        print(f"❌ Error: API key file not found: {path}", file=sys.stderr)
+        sys.exit(1)
+
+    # Check file permissions (warn if too open, skip on Windows)
+    if sys.platform != 'win32':
+        import stat
+        mode = os.stat(path).st_mode
+        if mode & (stat.S_IRGRP | stat.S_IROTH):
+            print(f"⚠️  Warning: API key file {path} is readable by group/others.", file=sys.stderr)
+            print("   Consider running: chmod 600 " + path, file=sys.stderr)
+
+    with open(path, 'r', encoding='utf-8') as f:
+        key = f.read().strip()
+
+    if not key:
+        print(f"❌ Error: API key file is empty: {path}", file=sys.stderr)
+        sys.exit(1)
+
+    return key
+
+
 def main():
     """Main entry point."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
         description='Automated documentation audit using Claude API'
     )
@@ -386,16 +442,16 @@ def main():
         action='store_true',
         help='Exit with non-zero code if issues are found'
     )
-    
+    parser.add_argument(
+        '--api-key-file',
+        help='Path to file containing the Anthropic API key',
+        default=None
+    )
+
     args = parser.parse_args()
-    
-    # Check for API key
-    api_key = os.environ.get('ANTHROPIC_API_KEY')
-    if not api_key:
-        print("❌ Error: ANTHROPIC_API_KEY environment variable not set", file=sys.stderr)
-        print("\nSet it in your environment or GitHub secrets:", file=sys.stderr)
-        print("  export ANTHROPIC_API_KEY='your-key-here'", file=sys.stderr)
-        sys.exit(1)
+
+    # Resolve API key (file-based preferred, env var as fallback)
+    api_key = _resolve_api_key(args.api_key_file)
     
     print("🚀 Starting Documentation Audit")
     print("=" * 60)

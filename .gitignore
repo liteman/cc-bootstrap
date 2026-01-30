@@ -29,6 +29,9 @@ coverage/
 tmp/
 temp/
 
+# Claude Code local settings (user-specific, not shared)
+.claude/settings.local.json
+
 # Audit reports (keep template)
 .claude/audit-reports/*
 !.claude/audit-reports/TEMPLATE.md

@@ -17,7 +17,7 @@ This template includes a `.claude/settings.json` file with recommended safe perm
 ### Settings Files
 
 - **`.claude/settings.json`** - Project template (committed to git, shared with team)
-- **`.claude/settings.local.json`** - Local overrides (gitignored, personal preferences)
+- **`.claude/settings.local.json`** - Local overrides (gitignored via `.gitignore`, personal preferences)
 
 ### Permission Format
 
@@ -44,12 +44,16 @@ This template's `.claude/settings.json` blocks these destructive commands by def
 ### File Deletion
 ```
 Bash(rm -rf:*)
+Bash(rm -Rf:*)
 Bash(rm -fr:*)
+Bash(rm -fR:*)
 Bash(rm -r:*)
+Bash(rm -R:*)
+Bash(rm --recursive:*)
 Bash(rmdir:*)
 Bash(del:*)
 ```
-Denied because: Recursive file deletion is irreversible and the most common source of catastrophic data loss.
+Denied because: Recursive file deletion is irreversible and the most common source of catastrophic data loss. Both lowercase `-r` and uppercase `-R` variants are blocked, along with the `--recursive` long form.
 
 ### Permission Changes
 ```
@@ -304,19 +308,25 @@ See [superpowers-integration.md](superpowers-integration.md) for more details on
 
 If you're using [Gastown](https://github.com/steveyegge/gastown) for multi-agent orchestration, consider adding these permissions:
 
-### Gastown CLI
+### Gastown CLI (Read-Only)
 ```
-Bash(gt:*)
+Bash(gt rig:*)
+Bash(gt convoy:*)
+Bash(gt agents:*)
+Bash(gt config show:*)
+Bash(gt --version:*)
 ```
-Covers all `gt` subcommands including workspace management (`gt rig list`, `gt convoy show`), agent queries (`gt agents`), and orchestration (`gt sling`, `gt mayor attach`).
+Covers read-only `gt` subcommands for workspace queries, convoy status, and agent listing.
 
-**Note:** Commands like `gt mayor attach` and `gt sling` spawn new Claude Code sessions, which consume API credits and system resources. Pre-approving `gt:*` is convenient but be aware of the cost implications of agent-spawning commands.
+**Note:** Agent-spawning commands (`gt mayor attach`, `gt sling`) are intentionally **not** pre-approved. These spawn new Claude Code sessions that consume API credits and system resources. Claude will prompt you before running them, giving you a chance to review the action.
 
-### Beads Issue Tracking
+### Beads Issue Tracking (Read-Only)
 ```
-Bash(bd:*)
+Bash(bd list:*)
+Bash(bd show:*)
+Bash(bd --version:*)
 ```
-Covers beads commands for issue/work item management. Beads manages structured work items in git-backed storage.
+Covers read-only beads commands for viewing issues and work items. Write operations (create, update, close) will prompt for approval.
 
 ### Go Runtime (Read-Only)
 ```
