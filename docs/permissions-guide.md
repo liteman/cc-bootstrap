@@ -37,6 +37,48 @@ Example:
 }
 ```
 
+## Pre-Configured Deny Rules
+
+This template's `.claude/settings.json` blocks these destructive commands by default:
+
+### File Deletion
+```
+Bash(rm -rf:*)
+Bash(rm -fr:*)
+Bash(rm -r:*)
+Bash(rmdir:*)
+Bash(del:*)
+```
+Denied because: Recursive file deletion is irreversible and the most common source of catastrophic data loss.
+
+### Permission Changes
+```
+Bash(chmod:*)
+Bash(chown:*)
+```
+Denied because: Rarely needed in development workflows; can break file access or introduce security issues.
+
+### Git History Destruction
+```
+Bash(git push --force:*)
+Bash(git push -f:*)
+Bash(git reset --hard:*)
+Bash(git clean -fd:*)
+Bash(git checkout -- .:*)
+```
+Denied because: These rewrite or discard history/changes irreversibly. Force-push can destroy teammates' work; hard reset and clean permanently delete uncommitted changes.
+
+### Not Denied (by design)
+
+| Command | Why it's not denied |
+|---------|---------------------|
+| `rm` (without `-r`) | Single-file removal is a normal dev operation |
+| `mv`, `cp` | Common file operations; blocking would be overly restrictive |
+| `npm install`, `pip install` | Frequently needed; better handled via `ask` if desired |
+| `git push` (without `--force`) | Normal workflow; only force-push is dangerous |
+
+---
+
 ## Pre-Configured Permissions
 
 This template's `.claude/settings.json` includes these safe permissions:
@@ -178,8 +220,10 @@ Bash(apt install:*)
 Bash(brew install:*)
 
 # Dangerous - Executes arbitrary commands
-Bash(curl:* | sh)
-Bash(wget:* | sh)
+# Note: pipe patterns (curl | sh) can't be expressed as deny rules,
+# but Claude Code will prompt before running these commands
+Bash(curl:*)
+Bash(wget:*)
 ```
 
 ## Recommended Starter Configuration
@@ -255,6 +299,32 @@ The plugin uses:
 If you're developing custom skills that use external tools, you may need to add specific permissions for those tools.
 
 See [superpowers-integration.md](superpowers-integration.md) for more details on using superpowers with this template.
+
+## Gastown Multi-Agent Orchestration
+
+If you're using [Gastown](https://github.com/steveyegge/gastown) for multi-agent orchestration, consider adding these permissions:
+
+### Gastown CLI
+```
+Bash(gt:*)
+```
+Covers all `gt` subcommands including workspace management (`gt rig list`, `gt convoy show`), agent queries (`gt agents`), and orchestration (`gt sling`, `gt mayor attach`).
+
+**Note:** Commands like `gt mayor attach` and `gt sling` spawn new Claude Code sessions, which consume API credits and system resources. Pre-approving `gt:*` is convenient but be aware of the cost implications of agent-spawning commands.
+
+### Beads Issue Tracking
+```
+Bash(bd:*)
+```
+Covers beads commands for issue/work item management. Beads manages structured work items in git-backed storage.
+
+### Go Runtime (Read-Only)
+```
+Bash(go version:*)
+```
+Safe because: Read-only system information to verify Go runtime availability.
+
+See [gastown-integration.md](gastown-integration.md) for more details on using Gastown with this template.
 
 ## Best Practices
 

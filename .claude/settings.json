@@ -21,9 +21,25 @@
       "Bash(date:*)",
       "Bash(uname:*)",
       "Bash(hostname:*)",
-      "Bash(whoami:*)"
+      "Bash(whoami:*)",
+      "Bash(gt:*)",
+      "Bash(bd:*)",
+      "Bash(go version:*)"
     ],
-    "deny": [],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -r:*)",
+      "Bash(rmdir:*)",
+      "Bash(del:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git checkout -- .:*)"
+    ],
     "ask": []
   }
 }

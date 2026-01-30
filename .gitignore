@@ -29,3 +29,7 @@ coverage/
 tmp/
 temp/
 
+# Audit reports (keep template)
+.claude/audit-reports/*
+!.claude/audit-reports/TEMPLATE.md
+

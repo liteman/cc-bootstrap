@@ -102,36 +102,20 @@ For complex work spanning multiple areas, read:
 
 Use sparingly - only when truly needed for cross-cutting work.
 
-#### /audit
-Perform a comprehensive audit of the `.claude/` documentation structure. This should be run periodically (monthly or quarterly) to keep documentation organized and current.
+#### /audit [quick|full]
+Perform a comprehensive audit of the `.claude/` documentation structure. Implemented as a skill in `.claude/skills/audit/SKILL.md`.
 
-**Audit Process**:
-1. Read all files in `.claude/` directory (architecture.md, modules/, workflows/, conventions/)
-2. Analyze and identify:
-   - Outdated information (references to removed code, old patterns)
-   - Duplicated content across files
-   - Missing documentation (modules without guides, undocumented patterns)
-   - Inconsistencies (conflicting information between files)
-   - Overly long files (> recommended size limits)
-   - Dead links or broken references
-3. Create an audit report saved to `.claude/audit-reports/[date]-audit.md` with:
-   - Summary of findings
-   - Specific issues by category
-   - Recommendations for each issue
-   - Prioritized action items
-4. Optionally, based on user approval:
-   - Fix simple issues (broken links, formatting)
-   - Consolidate duplicate content
-   - Archive outdated sections
-   - Reorganize oversized files
+**Usage**:
+- `/audit` or `/audit full` - Complete 5-phase audit with remediation options
+- `/audit quick` - Fast scan focusing on critical/high priority issues only
 
 **When to use**:
+- Monthly quick checks (`/audit quick`)
+- Quarterly full audits (`/audit full`)
 - After major refactoring or architecture changes
-- When onboarding reveals documentation gaps
-- Monthly/quarterly maintenance
 - When documentation feels stale or hard to navigate
 
-See `.claude/AUDIT_COMMAND.md` for detailed usage and `.claude/workflows/documentation-audit.md` for the full workflow.
+See `.claude/AUDIT_COMMAND.md` for quick reference and `.claude/workflows/documentation-audit.md` for detailed workflow.
 
 ### Session Start Protocol
 
@@ -348,3 +332,37 @@ For personal response style preferences, see [docs/response-style-guidelines.md]
 When both are installed, superpowers handles the development methodology (brainstorming, planning, TDD enforcement) while this template provides project-specific context through modules, workflows, and conventions.
 
 **Security Note:** Superpowers uses aggressive instruction patterns. For proprietary projects, consider version pinning and reviewing updates before adoption. See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide and security considerations.
+
+### Gastown (Optional - Multi-Agent Orchestration)
+
+[Gastown](https://github.com/steveyegge/gastown) is a multi-agent orchestration system that manages coordinated workflows across multiple Claude Code agents. It complements this template:
+
+- **This template** provides per-project documentation and context
+- **Gastown** orchestrates multiple agents across projects with persistent state
+
+**Installation:**
+```bash
+brew install gastown          # Homebrew (recommended)
+npm install -g @gastown/gt   # npm
+go install github.com/steveyegge/gastown/cmd/gt@latest  # Go
+```
+
+**Quick Start:**
+```bash
+gt install ~/gt --git
+gt rig add myproject https://github.com/you/repo.git
+gt crew add yourname --rig myproject
+gt mayor attach
+```
+
+**Key Commands:**
+- `gt mayor attach` - Start the Mayor coordinator
+- `gt rig add` - Add a project repository
+- `gt sling` - Assign work to an agent
+- `gt convoy create` - Create a tracked work bundle
+- `gt agents` - List active agents
+
+**How it works with this template:**
+Gastown operates at the workspace level (orchestrating agents across projects) while this template operates at the project level (structuring documentation and context). Agents spawned by Gastown automatically benefit from cc-bootstrap's `.claude/` documentation when working in a project rig.
+
+**When to use:** Large features, parallel workstreams, complex refactors, or multi-project coordination where multiple agents working simultaneously adds value. See [docs/gastown-integration.md](docs/gastown-integration.md) for the full integration guide.
