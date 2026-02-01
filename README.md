@@ -372,6 +372,300 @@ After using this template:
 
 ---
 
+<!-- TIER-3-START -->
+## Tier 3: Power User — Full Automation & Multi-Agent
+
+*Building on Tiers 1 and 2, this tier adds CI/CD automation, git-backed issue tracking, session hooks, and optional multi-agent orchestration.*
+
+### What This Tier Adds
+
+```
+.                                        # Adds to your existing structure
+├── AGENTS.md                            # Multi-agent coordination guide
+├── .claude/
+│   └── settings.local.json              # + hook configurations (see below)
+├── .github/
+│   ├── workflows/
+│   │   └── documentation-audit.yml      # Activated from .template
+│   ├── scripts/
+│   │   └── audit-docs.py               # Claude-powered audit script
+│   ├── audit-config.yml                 # Audit thresholds and behavior
+│   └── SETUP.md                         # GitHub Actions setup guide
+├── .beads/                              # (Optional) Git-backed issue tracking
+│   └── issues.jsonl                     # Issue database
+└── docs/
+    ├── git-setup.md                     # Git configuration guide
+    ├── gh-cli-setup.md                  # GitHub CLI setup
+    ├── permissions-guide.md             # Claude Code permissions reference
+    ├── response-style-guidelines.md     # Personal response preferences
+    ├── superpowers-integration.md       # Superpowers plugin guide
+    ├── gastown-integration.md           # (Optional) Gas Town multi-agent guide
+    ├── planning/                        # Implementation plans
+    └── analysis/                        # Code analysis documents
+```
+
+---
+
+### GitHub Actions: Automated Documentation Audit
+
+A GitHub Actions workflow audits your `.claude/` documentation using the Claude API. It runs on a schedule, on documentation PRs, and on-demand.
+
+**Enable it:**
+```bash
+mv .github/workflows/documentation-audit.yml.template \
+   .github/workflows/documentation-audit.yml
+```
+
+**Add your API key:**
+1. Go to your repo's **Settings > Secrets and variables > Actions**
+2. Add `ANTHROPIC_API_KEY` with your Anthropic API key
+
+**What it does:**
+- Monthly scheduled audits (1st of each month)
+- PR checks when `.claude/` or `CLAUDE.md` files change
+- Creates GitHub issues for critical findings
+- Comments on PRs with audit results
+
+**Customize** in `.github/audit-config.yml`:
+```yaml
+model: claude-sonnet-4-20250514
+thresholds:
+  max_file_size: 600
+  min_coverage: 80
+ci_behavior:
+  create_issue_on_critical: true
+  comment_on_pr: true
+```
+
+See [.github/SETUP.md](.github/SETUP.md) for full setup instructions.
+
+---
+
+### Beads: Git-Backed Issue Tracking
+
+[Beads](https://github.com/steveyegge/beads) (`bd` CLI) provides lightweight, git-backed issue tracking that Claude Code can read and update directly.
+
+**Install:**
+```bash
+go install github.com/steveyegge/beads/cmd/bd@latest
+```
+
+**Initialize in your project:**
+```bash
+bd init
+```
+
+**Basic usage:**
+```bash
+bd create --title "Add user auth" --type feat --priority 2
+bd list                    # View all issues
+bd show <id>               # Full issue details
+bd update <id> --status=in_progress
+bd close <id>              # Mark complete
+```
+
+**Why it matters:** Issues live in your repo as `.beads/issues.jsonl`. Claude Code can read issue context, update status, and create new issues — all without leaving the terminal. No browser, no context switch.
+
+**Suggested permissions** (add to `.claude/settings.local.json`):
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(bd list:*)",
+      "Bash(bd show:*)",
+      "Bash(bd --version:*)"
+    ]
+  }
+}
+```
+
+---
+
+### Hook Configurations
+
+Hooks are shell commands that Claude Code runs in response to session events. They enforce project standards automatically.
+
+Add hooks to `.claude/settings.local.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Load project context: run /verify-context to check loaded docs'"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Reminder: check permissions-guide.md for safe command patterns'"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Context compacting — ensure critical state is committed or noted'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Workflow active — following project conventions'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo 'Session ending — verify all changes are committed'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+| Hook | When It Fires | Use Case |
+|------|---------------|----------|
+| `SessionStart` | Session begins | Load context reminders, check environment |
+| `PreToolUse` | Before any tool call | Guard dangerous operations, log activity |
+| `PreCompact` | Before context compaction | Preserve critical state before memory trim |
+| `UserPromptSubmit` | User sends a message | Inject workflow context, enforce conventions |
+| `Stop` | Session ends | Verify cleanup, commit reminders |
+
+Customize these hooks for your project. The examples above are starting points — replace the `echo` commands with scripts that enforce your team's standards.
+
+---
+
+### AGENTS.md
+
+Create an `AGENTS.md` at your project root to guide any AI agent (not just Claude Code) working in the repo:
+
+```markdown
+# AGENTS.md
+
+## Project Context
+- This project uses the cc-bootstrap documentation structure
+- All project context is in `.claude/` — start with `CLAUDE.md`
+- Module docs are in `.claude/modules/`, workflows in `.claude/workflows/`
+
+## Working Conventions
+- Follow conventions in `.claude/conventions/`
+- Run tests before committing: `<your test command>`
+- Run linting before committing: `<your lint command>`
+
+## Issue Tracking
+- Issues are tracked in `.beads/issues.jsonl` (if using Beads)
+- Use `bd show <id>` to read issue context before starting work
+
+## Multi-Agent Coordination
+- If multiple agents work in this repo, coordinate via git branches
+- Each agent should work on a separate branch
+- Do not force-push or rewrite shared history
+```
+
+This file is read by any agent entering the repository, providing immediate orientation regardless of the agent framework.
+
+---
+
+### Gas Town: Multi-Agent Orchestration (Optional)
+
+> **This section is entirely optional.** Everything above works without Gas Town. Add Gas Town only if you need multiple Claude Code agents working in parallel across your projects.
+
+[Gas Town](https://github.com/steveyegge/gastown) orchestrates multiple Claude Code agents across projects. It manages agent lifecycles, work assignment, and coordination through git-backed state.
+
+| Single Agent (Tiers 1-2) | Multi-Agent (Gas Town) |
+|---------------------------|------------------------|
+| One Claude Code session | Multiple parallel agents |
+| Manual task management | Automated work dispatch |
+| Project-level context | Workspace-level coordination |
+| `/audit`, `/load-module` | `gt sling`, `gt convoy` |
+
+**Install:**
+```bash
+# Homebrew (recommended)
+brew install gastown
+
+# Or via Go
+go install github.com/steveyegge/gastown/cmd/gt@latest
+```
+
+**Initial setup:**
+```bash
+gt install ~/gt --git          # Create workspace
+cd ~/gt
+gt rig add myproject <repo>    # Add your project
+gt crew add yourname --rig myproject
+gt mayor attach                # Start the coordinator
+```
+
+**Key concepts:**
+
+| Term | Description |
+|------|-------------|
+| **Town** | Root workspace containing all projects |
+| **Mayor** | AI coordinator with workspace-wide context |
+| **Rig** | Project container wrapping a git repo |
+| **Polecat** | Ephemeral worker agent for a specific task |
+| **Convoy** | Bundle of related work items |
+
+**Suggested permissions** for Gas Town (add to `.claude/settings.local.json`):
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(gt rig:*)",
+      "Bash(gt convoy:*)",
+      "Bash(gt agents:*)",
+      "Bash(gt config show:*)"
+    ]
+  }
+}
+```
+
+Agent-spawning commands (`gt mayor attach`, `gt sling`) are intentionally not pre-approved — they create new sessions that consume API credits.
+
+See [docs/gastown-integration.md](docs/gastown-integration.md) for the full setup guide.
+
+---
+
+### What This Enables
+
+With Tier 3 fully configured, you get:
+
+- **Automated quality gates** — GitHub Actions audits catch documentation drift before it becomes a problem
+- **Git-native issue tracking** — Beads issues live in your repo; Claude reads and updates them directly
+- **Session guardrails** — Hooks enforce conventions automatically at session start, tool use, and session end
+- **Agent-ready repos** — AGENTS.md means any AI agent can orient itself in your project immediately
+- **Parallel development** (with Gas Town) — Multiple agents work on separate tasks simultaneously, coordinated through git-backed state
+<!-- TIER-3-END -->
+
+---
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit issues or pull requests.
