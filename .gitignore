@@ -39,3 +39,9 @@ claude-plugins-marketplace/
 .claude/audit-reports/*
 !.claude/audit-reports/TEMPLATE.md
 
+
+# Gas Town (added by gt)
+.runtime/
+.claude/
+.beads/
+.logs/
