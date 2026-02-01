@@ -69,313 +69,124 @@ I've added the Claude Code bootstrap template to this existing project. Please:
 
 ---
 
-## What's Included
+<!-- TIER 2 START -->
+## Tier 2: Intermediate — Structured Development Workflows
 
-### Project Structure
+> **Building on Tier 1.** You already have `CLAUDE.md` and `settings.local.json`. This tier adds structured workflows, conventions, and on-demand documentation so Claude works consistently across features, bugs, and refactors.
+
+### What you're adding
 
 ```
 .
-├── CLAUDE.md                    # Primary guidance file for Claude Code
-├── .claude/                     # Detailed documentation structure
-│   ├── architecture.md          # System architecture template
-│   ├── AUDIT_COMMAND.md         # Quick reference for /audit command
-│   ├── modules/                 # Module-specific documentation
-│   │   └── _template.md         # Template for new modules
-│   ├── workflows/               # Development workflow guides
+├── CLAUDE.md                        # Enhanced with custom commands (update existing)
+├── .claude/
+│   ├── settings.local.json          # (from Tier 1)
+│   ├── architecture.md              # System design overview
+│   ├── modules/                     # On-demand module documentation
+│   │   └── _template.md             # Starting template for new modules
+│   ├── workflows/                   # Step-by-step development guides
 │   │   ├── feature-development.md
 │   │   ├── bug-fixes.md
-│   │   ├── refactoring.md
-│   │   └── documentation-audit.md
-│   ├── conventions/             # Coding standards and practices
-│   │   ├── code-style.md
-│   │   ├── testing.md
-│   │   └── git-workflow.md
-│   ├── audit-reports/           # Generated audit reports
-│   │   └── TEMPLATE.md
-│   └── settings.local.json      # Claude Code project settings
-├── .github/                     # GitHub Actions and scripts
-│   ├── workflows/
-│   │   └── documentation-audit.yml.template
-│   ├── scripts/
-│   │   └── audit-docs.py
-│   ├── audit-config.yml
-│   ├── README.md
-│   └── SETUP.md
-└── docs/                        # Project documentation
-    ├── git-setup.md             # Git configuration guide
-    ├── gh-cli-setup.md          # GitHub CLI setup
-    ├── permissions-guide.md     # Claude Code permissions
-    ├── response-style-guidelines.md  # Personal response preferences
-    ├── planning/                # Implementation plans
-    └── analysis/                # Code analysis documents
+│   │   └── refactoring.md
+│   └── conventions/                 # Team coding standards
+│       ├── code-style.md
+│       ├── testing.md
+│       └── git-workflow.md
+└── (Superpowers plugin)             # Installed via Claude Code CLI
 ```
 
----
+### Why each piece matters
 
-## Companion Plugin: Superpowers
+**`architecture.md`** — Gives Claude a map of your system. Without it, Claude re-discovers your architecture every session by reading code. With it, Claude starts each session already knowing which components exist, how they connect, and where to make changes.
 
-This template works excellently with the [superpowers](https://github.com/obra/superpowers) plugin by Jesse Vincent, which provides disciplined development workflows.
+**`modules/`** — On-demand deep dives into specific parts of your codebase. Instead of loading everything into context, you load only what's relevant: `/load-module auth` before working on authentication, `/load-module payments` before billing changes. Keeps context focused and responses accurate.
 
-| This Template | Superpowers |
-|---------------|-------------|
-| Project knowledge organization | Development methodology |
-| Documentation structure | Behavioral workflows |
-| `/audit`, `/verify-context`, `/load-module` | `/brainstorm`, `/write-plan`, `/execute-plan` |
+**`workflows/`** — Repeatable processes that Claude follows step-by-step:
 
-Together they create a complete development environment where Claude knows both WHAT your project contains and HOW to work on it effectively.
+| Workflow | What it does |
+|----------|-------------|
+| `feature-development.md` | Plan, implement with TDD, test, document |
+| `bug-fixes.md` | Reproduce, isolate root cause, fix, add regression tests |
+| `refactoring.md` | Verify coverage, make incremental changes, keep tests green |
 
-**Quick Install:**
+Without workflows, you describe your process every time. With them, Claude follows the same disciplined approach whether it's your first session or your fiftieth.
+
+**`conventions/`** — Codified standards that prevent style drift:
+
+| Convention | Prevents |
+|------------|----------|
+| `code-style.md` | Inconsistent naming, file organization, error handling |
+| `testing.md` | Untested code, flaky tests, missing coverage |
+| `git-workflow.md` | Messy commits, unclear PRs, broken branches |
+
+Claude reads these once per session and applies them to every change it makes.
+
+### Enhanced CLAUDE.md
+
+Add these custom commands to your existing `CLAUDE.md`:
+
+```markdown
+## Custom Commands
+
+- `/load-module <name>` — Read `.claude/modules/<name>.md` for deep context on a specific component
+- `/load-workflow <name>` — Read `.claude/workflows/<name>.md` before starting that type of work
+- `/verify-context` — List which documentation files have been loaded this session
+- `/audit` — Review all `.claude/` documentation for accuracy against current code
+```
+
+These commands give you explicit control over what Claude knows during a session. Load only what you need, verify what's loaded, and audit for staleness.
+
+### Install the Superpowers plugin
+
+[Superpowers](https://github.com/obra/superpowers) by Jesse Vincent adds disciplined development methodology on top of your project knowledge:
+
 ```bash
 /plugin marketplace add obra/superpowers-marketplace
 /plugin install superpowers@superpowers-marketplace
 ```
 
-See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed setup and usage.
+| This template provides | Superpowers provides |
+|------------------------|---------------------|
+| Project knowledge (what) | Development methodology (how) |
+| `/load-module`, `/load-workflow`, `/audit` | `/brainstorm`, `/write-plan`, `/execute-plan` |
+| Documentation structure | TDD enforcement, systematic debugging |
 
----
+Together they mean Claude knows both your codebase and a disciplined way to work on it. See [docs/superpowers-integration.md](docs/superpowers-integration.md) for configuration details.
 
-## Documentation Structure
+### Setup steps
 
-### CLAUDE.md
+1. **Create the directory structure:**
+   ```bash
+   mkdir -p .claude/modules .claude/workflows .claude/conventions
+   ```
 
-The main configuration file that Claude Code reads when starting a session. It contains:
+2. **Create `architecture.md`** — Start a Claude session and ask:
+   ```
+   Analyze this codebase and create .claude/architecture.md covering:
+   - High-level component overview
+   - Data flow between components
+   - Key architectural decisions and trade-offs
+   ```
 
-- **Project Overview**: Tech stack, structure, and key directories
-- **Custom Commands**: `/audit`, `/verify-context`, `/load-module`, `/load-workflow`
-- **Development Commands**: Build, test, lint commands for quick reference
-- **Critical Rules**: Project-wide constraints and requirements
-- **Best Practices**: TDD approach, multiple options for decisions
+3. **Create module docs** — For each major component:
+   ```bash
+   cp .claude/modules/_template.md .claude/modules/<component-name>.md
+   ```
+   Then ask Claude to fill it in by analyzing the relevant code.
 
-### .claude/ Directory
+4. **Customize workflows** — Edit each workflow file in `.claude/workflows/` to match your team's process (branching strategy, review requirements, deploy steps).
 
-Detailed documentation that Claude loads on-demand to reduce context overhead:
+5. **Set conventions** — Document your actual standards in `.claude/conventions/`. Be specific: naming patterns, test file locations, commit message format.
 
-#### modules/
-Module-specific documentation for different parts of your codebase. Use `_template.md` to create new module docs. Each module doc includes:
-- Architecture and component structure
-- Data models and API references
-- Common patterns and integration points
-- Testing and troubleshooting guides
+6. **Add custom commands to CLAUDE.md** — Copy the commands section above into your existing `CLAUDE.md`.
 
-**Usage**: Tell Claude `/load-module auth` to load authentication module context.
+7. **Install Superpowers** — Run the plugin install commands above inside a Claude Code session.
 
-#### workflows/
-Step-by-step guides for common development tasks:
+### What this enables
 
-| Workflow | Purpose |
-|----------|---------|
-| `feature-development.md` | Adding new features with proper planning, testing, and documentation |
-| `bug-fixes.md` | Systematic bug investigation, fixing, and regression prevention |
-| `refactoring.md` | Safe refactoring with test coverage and incremental changes |
-| `documentation-audit.md` | Comprehensive review of all `.claude/` documentation |
-
-**Usage**: Tell Claude `/load-workflow bug-fixes` before starting bug work.
-
-#### conventions/
-Coding standards and practices for consistency:
-
-| Convention | Covers |
-|------------|--------|
-| `code-style.md` | Naming, file organization, comments, error handling |
-| `testing.md` | Test structure, mocking, coverage, TDD practices |
-| `git-workflow.md` | Branching, commits, PRs, code review process |
-
-#### audit-reports/
-Generated reports from the `/audit` command. Track documentation health over time.
-
-### Custom Commands
-
-These commands are defined in CLAUDE.md and help manage context efficiently:
-
-| Command | Purpose |
-|---------|---------|
-| `/verify-context` | Show what documentation Claude has loaded |
-| `/load-module <name>` | Load specific module documentation |
-| `/load-workflow <name>` | Load workflow guide before starting work |
-| `/read-all-context` | Load all documentation (use sparingly) |
-| `/audit` | Run comprehensive documentation audit |
-
----
-
-## GitHub Actions
-
-### Documentation Audit Workflow
-
-Automated documentation audits using Claude API. The workflow is provided as a template to prevent it from running in the bootstrap repo itself.
-
-**To enable:**
-```bash
-mv .github/workflows/documentation-audit.yml.template .github/workflows/documentation-audit.yml
-```
-
-**Features:**
-- Monthly scheduled audits
-- PR checks when documentation changes
-- Manual trigger option
-- Automatic issue creation for critical findings
-- PR comments with audit results
-
-**Setup:**
-1. Enable the workflow (rename `.template` to `.yml`)
-2. Add `ANTHROPIC_API_KEY` to GitHub Secrets
-3. Customize `audit-config.yml` as needed
-
-See [.github/SETUP.md](.github/SETUP.md) for detailed instructions.
-
----
-
-## Claude Code Settings
-
-### .claude/settings.local.json
-
-Project-level settings for Claude Code permissions. Pre-configured with safe defaults:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm run:*)",
-      "Bash(npx:*)"
-    ]
-  }
-}
-```
-
-Customize based on your project's needs. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended permissions by platform.
-
-### Response Style Guidelines
-
-Personal preferences for how Claude responds are kept separate from project configuration. See [docs/response-style-guidelines.md](docs/response-style-guidelines.md) for guidelines you can add to your user-specific `~/.claude/CLAUDE.md`.
-
----
-
-## Useful Prompts
-
-### Project Setup
-
-**Initialize a new project:**
-```
-Initialize a TypeScript Node.js project with:
-- ESLint and Prettier configured
-- Jest for testing with watch mode
-- Pre-commit hooks for linting
-- Update CLAUDE.md with actual commands
-- Create initial module docs in .claude/modules/
-```
-
-**Analyze existing codebase:**
-```
-Analyze this codebase and:
-1. Map out the architecture in .claude/architecture.md
-2. Create module docs for each major component
-3. Document the build/test/lint commands in CLAUDE.md
-4. Identify coding conventions and add to .claude/conventions/
-```
-
-### Development Workflows
-
-**Start a new feature:**
-```
-I want to add [feature]. Please:
-1. Load the relevant workflow: /load-workflow feature-development
-2. Create a feature plan
-3. Implement using TDD (tests first)
-4. Update documentation as needed
-```
-
-**Fix a bug:**
-```
-There's a bug: [description]. Please:
-1. Load the bug fix workflow
-2. Reproduce and write a failing test
-3. Investigate root cause
-4. Fix and verify
-5. Add regression tests
-```
-
-**Refactor code:**
-```
-I want to refactor [component] because [reason]. Please:
-1. Load the refactoring workflow
-2. Ensure test coverage exists
-3. Plan the refactoring approach
-4. Make incremental changes, keeping tests green
-```
-
-### Documentation Maintenance
-
-**Run documentation audit:**
-```
-/audit
-```
-
-**Update module documentation:**
-```
-The [module] has changed significantly. Please:
-1. Load the current module doc
-2. Analyze the actual code
-3. Update the documentation to match reality
-4. Check for any broken references
-```
-
-### Architecture Decisions
-
-**Get implementation options:**
-```
-I need to [add feature/solve problem]. Please suggest 3-5 approaches with:
-- Description of each approach
-- Pros and cons
-- Complexity assessment
-- Your recommendation
-```
-
----
-
-## Tips for Effective Use
-
-1. **Start sessions with context**: Tell Claude what you're working on so it can suggest relevant docs to load
-2. **Use workflows**: Load the appropriate workflow before starting a task
-3. **Keep docs updated**: Run `/audit` periodically and update docs when code changes
-4. **Leverage TDD**: The workflows emphasize test-driven development for better results
-5. **Customize templates**: Replace placeholder text in templates with your actual project details
-6. **Use module docs**: Create focused documentation for each major component
-7. **Trust the structure**: The documentation hierarchy is designed to minimize context while maximizing relevance
-
----
-
-## Customization Checklist
-
-After using this template:
-
-- [ ] Update `CLAUDE.md` with actual project details
-- [ ] Replace `[PROJECT NAME]` and other placeholders
-- [ ] Create module docs for your main components
-- [ ] Update `architecture.md` with your system design
-- [ ] Customize conventions for your team's practices
-- [ ] Configure permissions in `settings.local.json`
-- [ ] Enable GitHub Actions if desired
-- [ ] Add project-specific workflows if needed
-- [ ] Consider installing superpowers plugin for enhanced workflows
-
----
-
-## Documentation
-
-| Document | Purpose |
-|----------|---------|
-| [CLAUDE.md](CLAUDE.md) | Main Claude Code configuration |
-| [docs/git-setup.md](docs/git-setup.md) | Git configuration recommendations |
-| [docs/gh-cli-setup.md](docs/gh-cli-setup.md) | GitHub CLI setup for PR creation |
-| [docs/permissions-guide.md](docs/permissions-guide.md) | Safe commands to pre-approve |
-| [docs/response-style-guidelines.md](docs/response-style-guidelines.md) | Personal response preferences |
-| [.github/SETUP.md](.github/SETUP.md) | GitHub Actions configuration |
-
----
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit issues or pull requests.
-
-## License
-
-MIT License - feel free to use this template for any project.
+- **Consistent development process** — Every feature, bug fix, and refactor follows documented steps instead of ad-hoc prompting
+- **On-demand context loading** — Claude reads only what's relevant, keeping responses focused and reducing hallucination
+- **Team-wide standards** — Conventions are enforced automatically, not remembered manually
+- **Session independence** — Any team member starts a Claude session and gets the same structured approach, no tribal knowledge required
+- **Composable methodology** — Your project knowledge (this template) combined with development discipline (Superpowers) covers both what to build and how to build it
+<!-- TIER 2 END -->
