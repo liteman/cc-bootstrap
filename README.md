@@ -134,212 +134,30 @@ See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detai
 
 ---
 
-## Documentation Structure
+## Key Directories
 
-### CLAUDE.md
+| Directory | Purpose | Details |
+|-----------|---------|---------|
+| `.claude/modules/` | Per-component documentation, loaded on demand | Use `/load-module <name>` |
+| `.claude/workflows/` | Step-by-step guides for features, bugs, refactoring | Use `/load-workflow <name>` |
+| `.claude/conventions/` | Code style, testing, and git standards | Loaded automatically via CLAUDE.md |
+| `.github/` | Documentation audit workflow and scripts | See [.github/SETUP.md](.github/SETUP.md) |
+| `docs/` | Project docs: permissions, git setup, integrations | See [Documentation](#documentation) below |
 
-The main configuration file that Claude Code reads when starting a session. It contains:
-
-- **Project Overview**: Tech stack, structure, and key directories
-- **Custom Commands**: `/audit`, `/verify-context`, `/load-module`, `/load-workflow`
-- **Development Commands**: Build, test, lint commands for quick reference
-- **Critical Rules**: Project-wide constraints and requirements
-- **Best Practices**: TDD approach, multiple options for decisions
-
-### .claude/ Directory
-
-Detailed documentation that Claude loads on-demand to reduce context overhead:
-
-#### modules/
-Module-specific documentation for different parts of your codebase. Use `_template.md` to create new module docs. Each module doc includes:
-- Architecture and component structure
-- Data models and API references
-- Common patterns and integration points
-- Testing and troubleshooting guides
-
-**Usage**: Tell Claude `/load-module auth` to load authentication module context.
-
-#### workflows/
-Step-by-step guides for common development tasks:
-
-| Workflow | Purpose |
-|----------|---------|
-| `feature-development.md` | Adding new features with proper planning, testing, and documentation |
-| `bug-fixes.md` | Systematic bug investigation, fixing, and regression prevention |
-| `refactoring.md` | Safe refactoring with test coverage and incremental changes |
-| `documentation-audit.md` | Comprehensive review of all `.claude/` documentation |
-
-**Usage**: Tell Claude `/load-workflow bug-fixes` before starting bug work.
-
-#### conventions/
-Coding standards and practices for consistency:
-
-| Convention | Covers |
-|------------|--------|
-| `code-style.md` | Naming, file organization, comments, error handling |
-| `testing.md` | Test structure, mocking, coverage, TDD practices |
-| `git-workflow.md` | Branching, commits, PRs, code review process |
-
-#### audit-reports/
-Generated reports from the `/audit` command. Track documentation health over time.
-
-### Custom Commands
-
-These commands are defined in CLAUDE.md and help manage context efficiently:
-
-| Command | Purpose |
-|---------|---------|
-| `/verify-context` | Show what documentation Claude has loaded |
-| `/load-module <name>` | Load specific module documentation |
-| `/load-workflow <name>` | Load workflow guide before starting work |
-| `/read-all-context` | Load all documentation (use sparingly) |
-| `/audit` | Run comprehensive documentation audit |
+Custom commands (`/audit`, `/verify-context`, `/load-module`, `/load-workflow`, `/read-all-context`) are defined in CLAUDE.md.
 
 ---
 
 ## GitHub Actions
 
-### Documentation Audit Workflow
-
-Automated documentation audits using Claude API. The workflow is provided as a template to prevent it from running in the bootstrap repo itself.
-
-**To enable:**
-```bash
-mv .github/workflows/documentation-audit.yml.template .github/workflows/documentation-audit.yml
-```
-
-**Features:**
-- Monthly scheduled audits
-- PR checks when documentation changes
-- Manual trigger option
-- Automatic issue creation for critical findings
-- PR comments with audit results
-
-**Setup:**
-1. Enable the workflow (rename `.template` to `.yml`)
-2. Add `ANTHROPIC_API_KEY` to GitHub Secrets
-3. Customize `audit-config.yml` as needed
-
-See [.github/SETUP.md](.github/SETUP.md) for detailed instructions.
+Automated documentation audits via Claude API. The workflow ships as a `.template` file — rename to `.yml` to enable. See [.github/SETUP.md](.github/SETUP.md) for setup instructions.
 
 ---
 
-## Claude Code Settings
+## Configuration
 
-### .claude/settings.local.json
-
-Project-level settings for Claude Code permissions. Pre-configured with safe defaults:
-
-```json
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm run:*)",
-      "Bash(npx:*)"
-    ]
-  }
-}
-```
-
-Customize based on your project's needs. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended permissions by platform.
-
-### Response Style Guidelines
-
-Personal preferences for how Claude responds are kept separate from project configuration. See [docs/response-style-guidelines.md](docs/response-style-guidelines.md) for guidelines you can add to your user-specific `~/.claude/CLAUDE.md`.
-
----
-
-## Useful Prompts
-
-### Project Setup
-
-**Initialize a new project:**
-```
-Initialize a TypeScript Node.js project with:
-- ESLint and Prettier configured
-- Jest for testing with watch mode
-- Pre-commit hooks for linting
-- Update CLAUDE.md with actual commands
-- Create initial module docs in .claude/modules/
-```
-
-**Analyze existing codebase:**
-```
-Analyze this codebase and:
-1. Map out the architecture in .claude/architecture.md
-2. Create module docs for each major component
-3. Document the build/test/lint commands in CLAUDE.md
-4. Identify coding conventions and add to .claude/conventions/
-```
-
-### Development Workflows
-
-**Start a new feature:**
-```
-I want to add [feature]. Please:
-1. Load the relevant workflow: /load-workflow feature-development
-2. Create a feature plan
-3. Implement using TDD (tests first)
-4. Update documentation as needed
-```
-
-**Fix a bug:**
-```
-There's a bug: [description]. Please:
-1. Load the bug fix workflow
-2. Reproduce and write a failing test
-3. Investigate root cause
-4. Fix and verify
-5. Add regression tests
-```
-
-**Refactor code:**
-```
-I want to refactor [component] because [reason]. Please:
-1. Load the refactoring workflow
-2. Ensure test coverage exists
-3. Plan the refactoring approach
-4. Make incremental changes, keeping tests green
-```
-
-### Documentation Maintenance
-
-**Run documentation audit:**
-```
-/audit
-```
-
-**Update module documentation:**
-```
-The [module] has changed significantly. Please:
-1. Load the current module doc
-2. Analyze the actual code
-3. Update the documentation to match reality
-4. Check for any broken references
-```
-
-### Architecture Decisions
-
-**Get implementation options:**
-```
-I need to [add feature/solve problem]. Please suggest 3-5 approaches with:
-- Description of each approach
-- Pros and cons
-- Complexity assessment
-- Your recommendation
-```
-
----
-
-## Tips for Effective Use
-
-1. **Start sessions with context**: Tell Claude what you're working on so it can suggest relevant docs to load
-2. **Use workflows**: Load the appropriate workflow before starting a task
-3. **Keep docs updated**: Run `/audit` periodically and update docs when code changes
-4. **Leverage TDD**: The workflows emphasize test-driven development for better results
-5. **Customize templates**: Replace placeholder text in templates with your actual project details
-6. **Use module docs**: Create focused documentation for each major component
-7. **Trust the structure**: The documentation hierarchy is designed to minimize context while maximizing relevance
+- **Permissions**: Pre-configured in `.claude/settings.local.json`. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended settings.
+- **Response style**: Personal preferences go in `~/.claude/CLAUDE.md`. See [docs/response-style-guidelines.md](docs/response-style-guidelines.md).
 
 ---
 
