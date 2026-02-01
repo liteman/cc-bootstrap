@@ -14,7 +14,152 @@ Each tier is additive — start at Beginner and layer on what you need.
 
 ---
 
-<!-- TIER 1: Beginner section (cc-rwq.1) -->
+<!-- TIER 1: BEGINNER -->
+## Tier 1: Get Productive Fast
+
+Two files. Five minutes. You'll have Claude Code working effectively in your project.
+
+### What You'll Set Up
+
+```
+your-project/
+├── CLAUDE.md                       # Project context for Claude Code
+└── .claude/
+    └── settings.local.json         # Safe permission defaults
+```
+
+That's it. These two files give Claude Code the context it needs to understand your project and the permissions to run your standard tools without asking every time.
+
+### CLAUDE.md — Tell Claude About Your Project
+
+Create `CLAUDE.md` in your project root. This is the first file Claude Code reads when it starts a session.
+
+````markdown
+# Project Overview
+
+[One-sentence description of what this project does.]
+
+## Tech Stack
+
+- Language: [e.g., TypeScript, Python, Go]
+- Framework: [e.g., Next.js, FastAPI, none]
+- Package manager: [e.g., npm, pip, cargo]
+
+## Commands
+
+```bash
+# Install dependencies
+[e.g., npm install]
+
+# Run dev server
+[e.g., npm run dev]
+
+# Run tests
+[e.g., npm test]
+
+# Run linter
+[e.g., npm run lint]
+
+# Build
+[e.g., npm run build]
+```
+
+## Project Structure
+
+- `src/` — Application source code
+- `tests/` — Test files
+- [Add your key directories]
+
+## Critical Rules
+
+- [e.g., Always write tests for new features]
+- [e.g., Never commit directly to main]
+- [Add any rules Claude must follow]
+````
+
+Replace the bracketed placeholders with your actual project details. Be specific — the more accurate this file is, the better Claude Code performs.
+
+### .claude/settings.local.json — Safe Permission Defaults
+
+Create `.claude/settings.local.json` to pre-approve common safe commands so Claude Code doesn't ask for permission on every build or test run:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npx:*)",
+      "Bash(npm test:*)",
+      "Bash(npm install)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(rm -rf:*)"
+    ]
+  }
+}
+```
+
+Adjust the `allow` list to match your project's toolchain. For example, use `Bash(python:*)` and `Bash(pip:*)` for Python projects, or `Bash(cargo:*)` for Rust. The `deny` list blocks commands you never want Claude to run without asking.
+
+### Quick Start
+
+#### New Project
+
+```bash
+# Create your project
+mkdir my-project && cd my-project
+git init
+
+# Create the two files above:
+# 1. CLAUDE.md at the project root
+# 2. .claude/settings.local.json
+
+# Start Claude Code
+claude
+```
+
+#### Existing Project
+
+```bash
+cd your-project
+
+# Create the two files above:
+# 1. CLAUDE.md at the project root
+# 2. .claude/settings.local.json
+
+# Start Claude Code
+claude
+```
+
+### Suggested First-Session Prompt
+
+Once you've created both files and started Claude Code, try this prompt to validate your setup:
+
+```
+Read CLAUDE.md and confirm you understand the project. Then run the
+test suite and tell me if anything fails. If tests pass, summarize
+the project structure in your own words.
+```
+
+This verifies Claude Code can read your config, execute your commands with the granted permissions, and navigate your codebase.
+
+### What This Enables
+
+With just these two files, Claude Code can:
+
+- **Understand your project** — tech stack, structure, and conventions from `CLAUDE.md`
+- **Run your tools** — build, test, and lint without permission prompts for each command
+- **Follow your rules** — critical constraints are front-and-center every session
+- **Stay safe** — denied commands require explicit approval before running
+
+This is the foundation. When you're ready for more structure — custom commands, workflow guides, coding conventions, and automated audits — see Tier 2.
+
+<!-- /TIER 1: BEGINNER -->
 
 ---
 
