@@ -39,3 +39,6 @@ claude-plugins-marketplace/
 .claude/audit-reports/*
 !.claude/audit-reports/TEMPLATE.md
 
+# Beads runtime (local issue tracking state)
+.beads/
+
