@@ -34,6 +34,18 @@ That's it. These two files give Claude Code the context it needs to understand y
 
 Create `CLAUDE.md` in your project root. This is the first file Claude Code reads when it starts a session.
 
+**Let Claude generate it for you.** Instead of filling in placeholders manually, start a Claude Code session in your project and use this prompt:
+
+```
+Analyze this project and create a CLAUDE.md file in the project root.
+Include: a one-sentence project description, the tech stack, the commands
+to install dependencies / run the dev server / run tests / lint / build,
+the key directories with short descriptions, and 2-3 critical rules
+for working in this codebase. Use the format below as a guide.
+```
+
+Or, if you prefer to write it by hand, here's the template:
+
 ````markdown
 # Project Overview
 
