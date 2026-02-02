@@ -42,6 +42,10 @@ claude-plugins-marketplace/
 
 # Gas Town (added by gt)
 .runtime/
-.claude/
 .beads/
 .logs/
+
+# Gas Town runtime files in .claude (but keep design/, modules/, workflows/, etc.)
+.claude/.gt/
+.claude/agents/
+.claude/runtime/

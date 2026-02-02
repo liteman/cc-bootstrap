@@ -18,6 +18,8 @@ Perform a documentation audit based on the mode specified in `$ARGUMENTS`:
    ```
    Glob: .claude/**/*.md
    Glob: CLAUDE.md
+   Glob: docs/design/**/*.md
+   Glob: docs/adr/**/*.md
    ```
 
 2. Read files in this order, tracking line counts:
@@ -26,6 +28,9 @@ Perform a documentation audit based on the mode specified in `$ARGUMENTS`:
    - `.claude/modules/*.md`
    - `.claude/workflows/*.md`
    - `.claude/conventions/*.md`
+   - `.claude/design/**/*.md` (if exists)
+   - `docs/design/**/*.md` (if exists)
+   - `docs/adr/**/*.md` (if exists)
 
 3. Report progress:
    ```
@@ -35,6 +40,8 @@ Perform a documentation audit based on the mode specified in `$ARGUMENTS`:
    ✓ X module guides
    ✓ X workflows
    ✓ X conventions
+   ✓ X design workflows (if present)
+   ✓ X ADRs (if present)
 
    Total: X files, X lines
    ```
@@ -68,6 +75,15 @@ For each file, check these categories:
 - All conventions documented
 - No obvious missing sections
 
+### Design Documentation Quality (if `.claude/design/` exists)
+- All 6 design phase workflows present (exploration, requirements, options, decision, detail, validation)
+- Design templates exist (DESIGN_DOCUMENT.md, ADR_TEMPLATE.md, SESSION_NOTES.md)
+- Design thinking conventions documented
+- ADR index in architecture.md is up-to-date
+- ADR files match index entries
+- Stale design documents flagged (>30 days without updates)
+- Design commands present in CLAUDE.md (/start-design-session, /load-design-phase, /finalize-design)
+
 ## Phase 3: Issue Identification
 
 Categorize all findings:
@@ -77,12 +93,15 @@ Categorize all findings:
 - Security-sensitive outdated guidance
 - Broken critical workflows
 - Missing documentation for core modules
+- ADR index out of sync with actual ADR files (could lead to wrong decisions)
 
 ### High Priority (Fix Soon)
 - Significantly outdated information
 - Confusing or contradictory content
 - Missing important module docs
 - Broken internal references
+- Missing design phase workflows (if design/ exists but incomplete)
+- Stale design documents blocking implementation (>30 days old)
 
 ### Medium Priority (skip in quick mode)
 - Minor outdated references
@@ -141,6 +160,8 @@ Categorize all findings:
 | Modules | X | [list] |
 | Workflows | X | [list] |
 | Conventions | X | [list] |
+| Design Phases (if applicable) | X/6 | [list] |
+| ADRs (if applicable) | X | N/A |
 
 ## Duplicate Content (full mode only)
 - [File 1] and [File 2]: [description]

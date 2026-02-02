@@ -69,13 +69,34 @@ Before starting work, read the appropriate workflow:
 - **Bug Fix**: Read `.claude/workflows/bug-fixes.md`
 - **Refactoring**: Read `.claude/workflows/refactoring.md`
 
+### Design Workflows
+Before significant architectural decisions, use design workflows:
+- **Design Session**: Read `.claude/design/workflows/design-session.md`
+- **Exploration Phase**: Read `.claude/design/workflows/exploration-phase.md`
+- **Requirements Phase**: Read `.claude/design/workflows/requirements-phase.md`
+- **Options Phase**: Read `.claude/design/workflows/options-phase.md`
+- **Decision Phase**: Read `.claude/design/workflows/decision-phase.md`
+- **Detail Phase**: Read `.claude/design/workflows/detail-phase.md`
+- **Validation Phase**: Read `.claude/design/workflows/validation-phase.md`
+
 ### Conventions
 For coding standards and practices:
 - **Code Style**: `.claude/conventions/code-style.md`
 - **Testing**: `.claude/conventions/testing.md`
 - **Git Workflow**: `.claude/conventions/git-workflow.md`
 
+### Design Templates
+For architectural design work:
+- **Design Document**: `.claude/design/templates/DESIGN_DOCUMENT.md`
+- **ADR Template**: `.claude/design/templates/ADR_TEMPLATE.md`
+- **Session Notes**: `.claude/design/templates/SESSION_NOTES.md`
+
+### Design Conventions
+- **Design Thinking**: `.claude/design/conventions/design-thinking.md`
+
 ### Documentation Organization
+- **Design documents**: Save in `docs/design/`
+- **ADRs**: Save in `docs/adr/`
 - **Implementation plans**: Save in `docs/plans/`
 - **Code analysis**: Save in `docs/analysis/`
 
@@ -131,6 +152,162 @@ Perform a comprehensive audit of the `.claude/` documentation structure. Impleme
 - When documentation feels stale or hard to navigate
 
 See `.claude/AUDIT_COMMAND.md` for quick reference and `.claude/workflows/documentation-audit.md` for detailed workflow.
+
+### Design Workflows
+
+#### /start-design-session
+Begin a structured design session with Opus model recommended.
+
+**When to use**:
+- Before implementation approach is clear
+- Multiple architectural options exist
+- Decision has significant reversal cost
+- Need to explore problem space before solutions
+
+**What it does**:
+1. Loads `.claude/design/workflows/design-session.md`
+2. Loads `.claude/design/conventions/design-thinking.md`
+3. Reads `.claude/architecture.md` for context
+4. Recommends Opus model for design reasoning
+5. Asks which design phase you're in
+6. Sets collaborative thinking mode
+
+**Response format**:
+```
+Design session mode activated.
+
+Loaded:
+- Design session workflow
+- Design thinking conventions
+- Current architecture
+
+Recommendation: Switch to Opus model for deep reasoning
+
+Current phase: [Which phase are you in?]
+⬜ Exploration ⬜ Requirements ⬜ Options ⬜ Decision ⬜ Detail ⬜ Validation
+
+What are we designing today?
+```
+
+#### /load-design-phase <phase>
+Load specific design phase workflow.
+
+**Phases**: exploration, requirements, options, decision, detail, validation
+
+**Example**: `/load-design-phase exploration`
+
+**What it does**:
+1. Reads `.claude/design/workflows/<phase>-phase.md`
+2. Reads `.claude/design/conventions/design-thinking.md`
+3. Summarizes phase goals and key prompts
+4. Enters phase-specific behavior mode
+
+**Response format**:
+```
+Phase loaded: [Phase Name]
+
+Goal: [Phase goal]
+Duration: [Typical duration]
+Key prompts: [list prompts from workflow]
+
+Loaded:
+- [Phase] phase workflow
+- Design thinking conventions
+
+Ready to begin [phase]. [Contextual question to start]
+```
+
+#### /finalize-design
+Transition from design to implementation.
+
+**When to use**: After design validation, before implementation
+
+**What it does**:
+1. Verifies design document exists and is complete
+2. Lists decisions that need ADRs
+3. Identifies `.claude/architecture.md` updates needed
+4. Suggests transition to implementation workflow
+
+**Response format**:
+```
+Design finalization checklist:
+
+Design Document: [✓ Found | ⚠ Not found]
+- Phase: [Current phase]
+- Completeness: [Assessment]
+
+ADRs to create:
+- [ ] [Decision 1]
+- [ ] [Decision 2]
+
+Architecture updates needed:
+- [ ] Update section [X] in .claude/architecture.md
+- [ ] Add new components
+
+Ready to implement?
+1. Create ADRs listed above
+2. Update .claude/architecture.md
+3. Run: /write-plan (Superpowers)
+4. Run: /load-workflow feature-development
+5. Switch to Sonnet model
+```
+
+---
+
+## Design Session Behavior
+
+When design workflows are loaded (`/start-design-session`, `/load-design-phase`), shift to **collaborative thinking mode**.
+
+### Core Principle
+
+You are a **thinking partner** during design. The user is the designer.
+
+### DO During Design
+
+1. **Ask clarifying questions** before proposing solutions
+2. **Present options with trade-offs**, not recommendations (during options phase)
+3. **Challenge assumptions** explicitly
+4. **Respect the current phase**:
+   - Exploration: Questions only, no solutions yet
+   - Requirements: Define boundaries, challenge assumptions
+   - Options: Neutral presentation of 3-5 alternatives
+   - Decision: Help evaluate, play devil's advocate
+   - Detail: Deep dive on specifics, identify edge cases
+   - Validation: Find gaps, identify risks, challenge design
+5. **Maintain context across sessions** (reference previous design decisions)
+
+### DON'T During Design
+
+1. **Don't jump to solutions** during exploration
+2. **Don't skip phases** unless user explicitly requests
+3. **Don't recommend** during options phase (present neutrally)
+4. **Don't let assumptions go unchallenged**
+5. **Don't rush to implementation** before design is validated
+
+### Recognizing Design Phases
+
+| User Says | They Want | Your Response |
+|-----------|-----------|---------------|
+| "Let's explore..." | Open discussion | Questions, no conclusions yet |
+| "I'm not ready to decide" | More analysis | More options, defer recommendations |
+| "What am I missing?" | Gap analysis | Identify overlooked concerns |
+| "Play devil's advocate" | Challenge | Push back on assumptions |
+| "Help me think through..." | Collaboration | Socratic dialogue |
+
+**See**: `.claude/design/conventions/design-thinking.md` for detailed guidelines.
+
+---
+
+## Model Selection
+
+Update to include design phase:
+
+| Phase | Model | Rationale |
+|-------|-------|-----------|
+| **Design & Architecture** | **Opus** | Deep reasoning for design thinking and architectural trade-off analysis |
+| **Planning** | **Opus** | Deep reasoning for design decisions, trade-off analysis, and plan creation |
+| **Implementation** | **Sonnet** | Fast, capable code generation with good cost efficiency |
+| **Review** | **Haiku** | Quick, cost-effective analysis for structured review tasks |
 
 ### Session Start Protocol
 

@@ -194,10 +194,19 @@ This is the foundation. When you're ready for more structure — custom commands
 │   │   ├── feature-development.md
 │   │   ├── bug-fixes.md
 │   │   └── refactoring.md
+│   ├── design/                      # Design methodology (optional)
+│   │   ├── workflows/               # Structured design process
+│   │   ├── conventions/             # Design thinking guidance
+│   │   └── templates/               # Design documents, ADRs
 │   └── conventions/                 # Team coding standards
 │       ├── code-style.md
 │       ├── testing.md
 │       └── git-workflow.md
+├── docs/
+│   └── design/                      # Design guides (optional)
+│       ├── design-workflow-guide.md
+│       ├── design-phase-reference.md
+│       └── adr-guide.md
 └── (Superpowers plugin)             # Installed via Claude Code CLI
 ```
 
@@ -227,6 +236,26 @@ Without workflows, you describe your process every time. With them, Claude follo
 
 Claude reads these once per session and applies them to every change it makes.
 
+**`design/` (optional)** — Structured design methodology for architectural decisions. This is not required for simple features, but becomes valuable when:
+
+- **Facing significant architectural decisions** — Multiple viable approaches exist (e.g., WebSockets vs SSE for real-time features)
+- **Unclear implementation path** — Need to explore problem space before solutions
+- **High reversal cost** — Decision will be expensive or complex to change later
+- **Cross-cutting changes** — Affects multiple modules or establishes patterns others will follow
+
+The design workflows guide you through 6 phases: Exploration → Requirements → Options → Decision → Detail → Validation. Use `/start-design-session` to begin, iterate through phases with `/load-design-phase <phase>`, then transition to implementation with `/finalize-design`.
+
+**Design complements Superpowers:**
+
+| Flow Stage | Tool | What It Does |
+|------------|------|--------------|
+| Initial exploration | `/brainstorm` (Superpowers) | Socratic questioning |
+| Structured design | `/load-design-phase` (cc-bootstrap) | Architecture iteration |
+| Implementation planning | `/write-plan` (Superpowers) | Detailed plan creation |
+| TDD implementation | `/execute-plan` (Superpowers) | Test-driven coding |
+
+See [docs/design/design-workflow-guide.md](docs/design/design-workflow-guide.md) for when to use design vs. implementation workflows, and [docs/design-integration.md](docs/design-integration.md) for how design workflows integrate with Superpowers.
+
 ### Enhanced CLAUDE.md
 
 Add these custom commands to your existing `CLAUDE.md`:
@@ -238,6 +267,9 @@ Add these custom commands to your existing `CLAUDE.md`:
 - `/load-workflow <name>` — Read `.claude/workflows/<name>.md` before starting that type of work
 - `/verify-context` — List which documentation files have been loaded this session
 - `/audit` — Review all `.claude/` documentation for accuracy against current code
+- `/start-design-session` — Begin structured design with Opus model (for architectural decisions)
+- `/load-design-phase <phase>` — Load specific design phase workflow (exploration, requirements, options, decision, detail, validation)
+- `/finalize-design` — Transition from design to implementation, create ADRs, update architecture.md
 ```
 
 These commands give you explicit control over what Claude knows during a session. Load only what you need, verify what's loaded, and audit for staleness.
@@ -608,6 +640,8 @@ With Tier 3 fully configured, you get:
 - [ ] Customize conventions in `.claude/conventions/` for your team
 - [ ] Install Superpowers plugin
 - [ ] Try `/load-workflow feature-development` on your first task
+- [ ] (Optional) Review design templates in `.claude/design/templates/` for architectural decision documentation
+- [ ] (Optional) Try `/start-design-session` on your next complex architectural decision
 
 ### After Tier 3
 
@@ -629,6 +663,9 @@ Commands defined in `CLAUDE.md` for on-demand context loading (Tier 2+):
 | `/load-workflow <name>` | Load a workflow guide before starting a task |
 | `/read-all-context` | Load all documentation at once (use sparingly — high token cost) |
 | `/audit` | Run a comprehensive documentation health audit |
+| `/start-design-session` | Begin structured design session with Opus model (architectural decisions) |
+| `/load-design-phase <phase>` | Load specific design phase: exploration, requirements, options, decision, detail, validation |
+| `/finalize-design` | Transition from design to implementation, create ADRs, update architecture |
 
 ---
 
@@ -662,6 +699,10 @@ See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detai
 | [docs/gh-cli-setup.md](docs/gh-cli-setup.md) | GitHub CLI setup for PR creation |
 | [docs/superpowers-integration.md](docs/superpowers-integration.md) | Superpowers plugin setup and usage guide |
 | [docs/gastown-integration.md](docs/gastown-integration.md) | Gas Town multi-agent orchestration guide |
+| [docs/design/design-workflow-guide.md](docs/design/design-workflow-guide.md) | When to use design vs. implementation workflows |
+| [docs/design/design-integration.md](docs/design/design-integration.md) | Design methodology + Superpowers integration |
+| [docs/design/design-phase-reference.md](docs/design/design-phase-reference.md) | Quick reference for the 6 design phases |
+| [docs/design/adr-guide.md](docs/design/adr-guide.md) | ADR best practices and writing guide |
 | [docs/response-style-guidelines.md](docs/response-style-guidelines.md) | Personal response style preferences (`~/.claude/CLAUDE.md`) |
 | [.github/SETUP.md](.github/SETUP.md) | GitHub Actions documentation audit setup |
 

@@ -202,3 +202,51 @@ Example:
 
 ### Research Areas
 [Areas being explored for future changes]
+
+---
+
+## Architecture Decision Records (ADRs)
+
+Significant architectural decisions are documented as ADRs following the template in `.claude/design/templates/ADR_TEMPLATE.md`.
+
+### When to Create an ADR
+
+Create an ADR when a decision:
+- [ ] Has significant impact on system structure
+- [ ] Involved evaluation of multiple viable options
+- [ ] Has meaningful reversal cost
+- [ ] Will make future developers ask "why did we do it this way?"
+- [ ] Affects multiple modules or cross-cutting concerns
+- [ ] Establishes a pattern others should follow
+
+### ADR Workflow
+
+1. Use design workflows to explore options: `/load-design-phase options`
+2. Make deliberate decision: `/load-design-phase decision`
+3. Create ADR from template: `.claude/design/templates/ADR_TEMPLATE.md`
+4. Save to `docs/adr/ADR-NNN-title.md`
+5. Link from this architecture document (table below)
+6. Update relevant module guides in `.claude/modules/`
+
+### ADR Storage
+
+ADRs live in `docs/adr/` and follow the naming convention:
+```
+docs/adr/ADR-NNN-short-title.md
+```
+
+Where NNN is zero-padded (001, 002, etc.).
+
+### ADR Index
+
+| ADR | Title | Status | Date | Modules Affected |
+|-----|-------|--------|------|------------------|
+| [ADR-001](../adr/ADR-001-example.md) | [Example decision] | Proposed | YYYY-MM-DD | [module1] |
+
+*Note: This index should be kept up-to-date as ADRs are created. Update this table when creating new ADRs.*
+
+### See Also
+
+- `.claude/design/workflows/design-session.md` — Design process workflow
+- `docs/design/adr-guide.md` — ADR best practices
+- `docs/design/design-workflow-guide.md` — When to use design workflows
