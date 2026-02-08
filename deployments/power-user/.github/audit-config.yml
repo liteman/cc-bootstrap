@@ -1,0 +1,127 @@
+# Documentation Audit Configuration
+# 
+# This file configures the automated documentation audit that runs in CI/CD.
+# Copy this to your project root as .github/audit-config.yml and customize.
+
+# Claude model to use for audits
+model: claude-sonnet-4-20250514
+
+# Maximum tokens for the audit response
+max_tokens: 16000
+
+# Paths to documentation files/directories to audit
+documentation_paths:
+  - CLAUDE.md
+  - .claude/architecture.md
+  - .claude/modules/
+  - .claude/workflows/
+  - .claude/conventions/
+  # Add custom paths:
+  # - docs/
+  # - README.md
+
+# Where to save the audit report
+output_path: .claude/audit-reports/latest-audit.md
+
+# Which checks to perform
+checks:
+  outdated_references: true    # Check for references to removed code
+  duplicate_content: true      # Find duplicated content across files
+  missing_documentation: true  # Identify undocumented modules
+  file_sizes: true            # Flag oversized files
+  broken_links: true          # Validate internal links
+  inconsistencies: true       # Find conflicting information
+
+# Thresholds for issues
+thresholds:
+  max_file_size: 600          # Maximum recommended lines per file
+  min_coverage: 80            # Minimum documentation coverage percentage
+  max_duplicates: 5           # Maximum acceptable duplicate content instances
+
+# Issue severity configuration (optional)
+severity:
+  # What constitutes a critical issue
+  critical:
+    - incorrect_code_references
+    - security_outdated_guidance
+    - broken_critical_workflows
+  
+  # What constitutes high priority
+  high_priority:
+    - significantly_outdated_info
+    - missing_core_module_docs
+    - broken_internal_references
+  
+  # Medium priority issues
+  medium_priority:
+    - minor_outdated_references
+    - duplicate_content
+    - file_size_violations
+  
+  # Low priority issues  
+  low_priority:
+    - formatting_inconsistencies
+    - minor_improvements
+
+# CI/CD behavior
+ci_behavior:
+  # Whether to create GitHub issues for critical findings
+  create_issue_on_critical: true
+  
+  # Whether to comment on PRs
+  comment_on_pr: true
+  
+  # Whether to fail the build on critical issues
+  fail_on_critical: false
+  
+  # Whether to fail on high priority issues
+  fail_on_high_priority: false
+  
+  # Commit audit reports back to repository (scheduled runs only)
+  commit_reports: true
+
+# Notifications (optional)
+notifications:
+  # Slack webhook for audit results
+  slack_webhook: null
+  
+  # Email addresses to notify on critical issues
+  email: []
+  
+  # Discord webhook
+  discord_webhook: null
+
+# Custom audit instructions (optional)
+# Additional context to provide to Claude during audit
+custom_instructions: |
+  Focus on:
+  - Accuracy of API endpoint documentation
+  - Currency of deployment instructions
+  - Completeness of architecture diagrams
+  
+  Ignore:
+  - Work-in-progress sections marked with TODO
+  - Experimental features marked as such
+
+# Excluded files (optional)
+# Files to skip during audit
+exclude_patterns:
+  - "**/node_modules/**"
+  - "**/.git/**"
+  - "**/archive/**"
+  - "**/*-template.md"
+  - "**/*-example.md"
+
+# Report customization (optional)
+report:
+  # Include statistics section
+  include_statistics: true
+  
+  # Include positive findings
+  include_positive_findings: true
+  
+  # Maximum issues to list per priority level
+  max_issues_per_level: 20
+  
+  # Include code snippets in findings
+  include_code_snippets: false

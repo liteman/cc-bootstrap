@@ -1,0 +1,40 @@
+# Project Overview
+
+[One-sentence description of what this project does.]
+
+## Tech Stack
+
+- Language: [e.g., TypeScript, Python, Go]
+- Framework: [e.g., Next.js, FastAPI, none]
+- Package manager: [e.g., npm, pip, cargo]
+
+## Commands
+
+```bash
+# Install dependencies
+[e.g., npm install]
+
+# Run dev server
+[e.g., npm run dev]
+
+# Run tests
+[e.g., npm test]
+
+# Run linter
+[e.g., npm run lint]
+
+# Build
+[e.g., npm run build]
+```
+
+## Project Structure
+
+- `src/` — Application source code
+- `tests/` — Test files
+- [Add your key directories]
+
+## Critical Rules
+
+- [e.g., Always write tests for new features]
+- [e.g., Never commit directly to main]
+- [Add any rules Claude must follow]
