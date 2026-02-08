@@ -1,20 +1,41 @@
 # AGENTS.md
 
 ## Project Context
-- This project uses the cc-bootstrap documentation structure
+
+- This project uses Claude Code's native agent teams feature
 - All project context is in `.claude/` — start with `CLAUDE.md`
 - Module docs are in `.claude/modules/`, workflows in `.claude/workflows/`
+- Custom subagent definitions are in `.claude/agents/`
+
+## Agent Teams Configuration
+
+- Agent teams enabled via `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (set in `.claude/settings.json`)
+- Display mode: auto (configured via `teammateMode` in settings)
+- Team lead uses `Shift+Tab` to toggle delegate mode
 
 ## Working Conventions
+
 - Follow conventions in `.claude/conventions/`
 - Run tests before committing: `[your test command]`
 - Run linting before committing: `[your lint command]`
 
-## Issue Tracking
-- Issues are tracked in `.beads/issues.jsonl` (if using Beads)
-- Use `bd show <id>` to read issue context before starting work
+## Teammate Coordination
 
-## Multi-Agent Coordination
-- If multiple agents work in this repo, coordinate via git branches
-- Each agent should work on a separate branch
-- Do not force-push or rewrite shared history
+- Team lead manages the shared task list
+- Teammates communicate via mailbox messaging
+- Each teammate inherits project context (CLAUDE.md, MCP servers, skills)
+- Teammates inherit the lead's permission settings
+
+## Custom Subagents
+
+Available subagent roles (in `.claude/agents/`):
+- **researcher** — Codebase exploration and documentation reading
+- **implementer** — Code writing, test authoring, file editing
+- **reviewer** — Code review, convention checking, validation
+- Create new roles: copy `.claude/agents/_template.md`
+
+## Task Quality Gates
+
+- `TeammateIdle` hook runs when a teammate finishes — use for validation
+- `TaskCompleted` hook runs when a task is marked complete — exit code 2 prevents completion
+- Both hooks can enforce project-specific quality standards

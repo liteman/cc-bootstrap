@@ -1,55 +1,28 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "auto",
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)",
-      "Bash(mkdir -p:*)",
       "Bash(ls:*)",
       "Bash(pwd:*)",
       "Bash(tree:*)",
       "Bash(file:*)",
-      "Bash(mkdir:*)",
       "Bash(which:*)",
-      "Bash(whereis:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
       "Bash(git log:*)",
       "Bash(git show:*)",
       "Bash(git branch:*)",
-      "Bash(git remote:*)",
-      "Bash(git config --get:*)",
-      "Bash(git config --list:*)",
-      "Bash(date:*)",
-      "Bash(uname:*)",
-      "Bash(hostname:*)",
-      "Bash(whoami:*)",
-      "Bash(gt rig:*)",
-      "Bash(gt convoy:*)",
-      "Bash(gt agents:*)",
-      "Bash(gt config show:*)",
-      "Bash(gt --version:*)",
-      "Bash(bd list:*)",
-      "Bash(bd show:*)",
-      "Bash(bd --version:*)",
-      "Bash(go version:*)"
+      "Bash(git remote:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
-      "Bash(rm -Rf:*)",
-      "Bash(rm -fr:*)",
-      "Bash(rm -fR:*)",
       "Bash(rm -r:*)",
-      "Bash(rm -R:*)",
-      "Bash(rm --recursive:*)",
-      "Bash(rmdir:*)",
-      "Bash(del:*)",
-      "Bash(chmod:*)",
-      "Bash(chown:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(git clean -fd:*)",
-      "Bash(git checkout -- .:*)"
-    ],
-    "ask": []
+      "Bash(git reset --hard:*)"
+    ]
   }
 }

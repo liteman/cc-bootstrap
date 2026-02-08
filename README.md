@@ -8,7 +8,8 @@ A tiered setup template for [Claude Code](https://claude.ai/code) — from a min
 |------|-------------|--------|
 | **Beginner** | Claude knows your project, safe permissions, builds/tests work | [`deployments/beginner/`](deployments/beginner/) |
 | **Intermediate** | + modular docs, workflows, conventions, design methodology | [`deployments/intermediate/`](deployments/intermediate/) |
-| **Power User** | + GitHub Actions, audit system, hooks, multi-agent support | [`deployments/power-user/`](deployments/power-user/) |
+| **Power User** | + agent teams, custom subagents, team hooks, delegate mode | [`deployments/power-user/`](deployments/power-user/) |
+| **Kitchen Sink** | + everything: GitHub Actions, audit system, Gas Town, Beads, all integrations | [`deployments/kitchen-sink/`](deployments/kitchen-sink/) |
 
 Each tier is **fully self-contained** — pick one folder and you have everything needed for that level. No cross-tier dependencies.
 
@@ -20,7 +21,7 @@ git clone https://github.com/liteman/cc-bootstrap.git
 cd cc-bootstrap
 
 # 2. Pick your tier and run the setup script
-cd deployments/beginner        # or intermediate, or power-user
+cd deployments/beginner        # or intermediate, power-user, kitchen-sink
 chmod +x setup.sh
 ./setup.sh /path/to/your-project
 
@@ -67,22 +68,39 @@ Adds modular documentation, repeatable workflows, coding conventions, and a 6-ph
 
 ---
 
-### Power User — Full Automation & Multi-Agent
+### Power User — Agent Teams
 
-Everything from Intermediate plus CI/CD automation, documentation audit systems, session hooks, and multi-agent orchestration support.
+Builds on Intermediate with Claude Code's native **agent teams** feature for multi-agent coordination. Spawn specialized teammates that work in parallel.
 
 **What you get (in addition to Intermediate):**
+- `.claude/agents/` — Custom subagent definitions (researcher, implementer, reviewer)
+- `.claude/settings.json` — Enables agent teams via `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
+- `.claude/workflows/agent-team-development.md` — Team-based development workflow
+- `AGENTS.md` — Agent teams coordination guide
+- Agent teams hooks — `TeammateIdle`, `TaskCompleted` quality gates
+- Delegate mode — `Shift+Tab` restricts lead to coordination only
+- `docs/agent-teams-guide.md` — Comprehensive agent teams reference
+
+**Best for:** Teams wanting parallel agent workflows, large features, research + implementation patterns.
+
+[Go to Power User deployment →](deployments/power-user/)
+
+---
+
+### Kitchen Sink — Everything Included
+
+Everything from Power User plus CI/CD automation, documentation audit systems, and third-party integrations. High token cost, maximum capability.
+
+**What you get (in addition to Power User):**
 - `.github/` — GitHub Actions for automated documentation auditing
 - `.claude/skills/audit/` — Comprehensive audit skill with scoring
 - `.claude/audit-reports/` — Audit report templates
-- `AGENTS.md` — Multi-agent coordination guide
-- Session hooks — Automated guardrails at session start, tool use, compaction, and stop
-- Enhanced permissions — Full deny list, hook configurations
-- Integration guides — Superpowers, Gas Town, Beads issue tracking
+- Full hook suite — SessionStart, PreToolUse, PreCompact, UserPromptSubmit, Stop
+- Integration guides — Superpowers, Gas Town, Beads, response style customization
 
-**Best for:** Production teams, CI/CD environments, multi-agent workflows.
+**Best for:** Production teams, CI/CD environments, experimental multi-agent setups.
 
-[Go to Power User deployment →](deployments/power-user/)
+[Go to Kitchen Sink deployment →](deployments/kitchen-sink/)
 
 ---
 
@@ -113,7 +131,9 @@ Commands defined in `CLAUDE.md` for on-demand context loading (Intermediate+):
 | `/verify-context` | Show what documentation Claude currently has loaded |
 | `/load-module <name>` | Load a specific module doc from `.claude/modules/` |
 | `/load-workflow <name>` | Load a workflow guide before starting a task |
-| `/audit` | Run a comprehensive documentation health audit |
+| `/audit` | Run a documentation health audit |
+| `/team-status` | Check agent team status, task list, mailbox (Power User+) |
+| `/define-agent <name>` | Create a new custom subagent from template (Power User+) |
 | `/start-design-session` | Begin structured design session with Opus model |
 | `/load-design-phase <phase>` | Load specific design phase: exploration, requirements, options, decision, detail, validation |
 | `/finalize-design` | Transition from design to implementation |
@@ -140,11 +160,11 @@ Install inside a Claude Code session:
 
 ### Gas Town (Optional)
 
-[Gas Town](https://github.com/steveyegge/gastown) orchestrates multiple Claude Code agents across projects. See the Power User deployment for setup details.
+[Gas Town](https://github.com/steveyegge/gastown) orchestrates multiple Claude Code agents across projects. See the [Kitchen Sink deployment](deployments/kitchen-sink/) for setup details.
 
 ### Beads (Optional)
 
-[Beads](https://github.com/steveyegge/beads) provides lightweight, git-backed issue tracking. See the Power User deployment for setup details.
+[Beads](https://github.com/steveyegge/beads) provides lightweight, git-backed issue tracking. See the [Kitchen Sink deployment](deployments/kitchen-sink/) for setup details.
 
 ---
 

@@ -45,18 +45,11 @@ Use the appropriate model for each phase of work to balance quality and cost:
 | **Planning** (architecture, design, complex reasoning) | **Opus** | Deep reasoning for design decisions, trade-off analysis, and plan creation |
 | **Implementation** (writing code, editing files, executing plans) | **Sonnet** | Fast, capable code generation with good cost efficiency |
 | **Review** (audits, code review, documentation review) | **Haiku** | Quick, cost-effective analysis for structured review tasks |
-| **Team Lead (coordination)** | **Opus** | Orchestrates teammates, manages task list, makes delegation decisions |
-| **Teammate (execution)** | **Sonnet** | Executes delegated tasks, writes code, runs tests |
 
 **When spawning sub-agents via the Task tool**, set the `model` parameter accordingly:
 - `model: "opus"` — Plan mode, architectural decisions, complex debugging
 - `model: "sonnet"` — Code implementation, file edits, test writing
 - `model: "haiku"` — Audit scans, code review, linting checks
-
-**When using agent teams**, model selection is configured per-agent in `.claude/agents/`:
-- Team lead typically uses Opus for coordination and decision-making
-- Implementer teammates use Sonnet for fast code generation
-- Reviewer teammates use Sonnet or Haiku for efficient analysis
 
 ---
 
@@ -75,14 +68,6 @@ Before starting work, read the appropriate workflow:
 - **New Feature**: Read `.claude/workflows/feature-development.md`
 - **Bug Fix**: Read `.claude/workflows/bug-fixes.md`
 - **Refactoring**: Read `.claude/workflows/refactoring.md`
-- **Agent Team Development**: Read `.claude/workflows/agent-team-development.md`
-
-### Agent Teams
-Custom subagent definitions for agent teams:
-- **Agent Template**: `.claude/agents/_template.md`
-- **Researcher**: `.claude/agents/researcher.md`
-- **Implementer**: `.claude/agents/implementer.md`
-- **Reviewer**: `.claude/agents/reviewer.md`
 
 ### Design Workflows
 Before significant architectural decisions, use design workflows:
@@ -154,28 +139,19 @@ For complex work spanning multiple areas, read:
 Use sparingly - only when truly needed for cross-cutting work.
 
 #### /audit [quick|full]
-Perform a basic documentation review. For the full audit skill with CI/CD integration, see the kitchen-sink deployment.
+Perform a comprehensive audit of the `.claude/` documentation structure. Implemented as a skill in `.claude/skills/audit/SKILL.md`.
 
-#### /team-status
-Check current agent team status: active teammates, task list, pending messages.
+**Usage**:
+- `/audit` or `/audit full` - Complete 5-phase audit with remediation options
+- `/audit quick` - Fast scan focusing on critical/high priority issues only
 
-Response format:
-```
-Agent Team Status:
-- Team: [team name or "No active team"]
-- Teammates: [count active / count total]
-- Task List: [pending/in_progress/completed counts]
-- Mailbox: [unread messages count]
-```
+**When to use**:
+- Monthly quick checks (`/audit quick`)
+- Quarterly full audits (`/audit full`)
+- After major refactoring or architecture changes
+- When documentation feels stale or hard to navigate
 
-#### /define-agent <name>
-Create a new custom subagent definition from the template.
-
-1. Copy `.claude/agents/_template.md` to `.claude/agents/<name>.md`
-2. Ask for: role description, model preference, tool requirements
-3. Fill in the template with provided details
-
-Example: `/define-agent security-reviewer`
+See `.claude/AUDIT_COMMAND.md` for quick reference and `.claude/workflows/documentation-audit.md` for detailed workflow.
 
 ### Design Workflows
 
@@ -319,51 +295,6 @@ You are a **thinking partner** during design. The user is the designer.
 | "Help me think through..." | Collaboration | Socratic dialogue |
 
 **See**: `.claude/design/conventions/design-thinking.md` for detailed guidelines.
-
----
-
-## Agent Teams
-
-This project is configured for Claude Code's native agent teams feature.
-
-### Enabling
-Agent teams are enabled via `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (pre-configured in `.claude/settings.json`).
-
-### Display Modes
-Configure `teammateMode` in settings:
-- `in-process` — Teammates run in the same terminal (navigate with Shift+Up/Down)
-- `tmux` — Each teammate gets its own pane (requires tmux or iTerm2)
-- `auto` (default) — Automatically chooses based on environment
-
-### Delegate Mode
-Press `Shift+Tab` to toggle the team lead into delegation-only mode. In this mode, the lead coordinates via task list and mailbox only — no direct implementation.
-
-### Custom Subagents
-Define specialized teammates in `.claude/agents/`:
-- `researcher.md` — Explores codebase, reads docs, answers questions (model: opus)
-- `implementer.md` — Writes code, runs tests, makes edits (model: sonnet)
-- `reviewer.md` — Reviews changes, checks conventions, validates (model: sonnet)
-- Create your own: copy `_template.md` and customize
-
-### Teammate Communication
-- **Mailbox**: Point-to-point or broadcast messages between teammates
-- **Shared Task List**: Work queue with status tracking and dependencies
-- **Idle Notifications**: Automatic alerts when teammates finish
-
-### When to Use Teams vs. Solo
-
-| Scenario | Approach |
-|----------|----------|
-| Single-focus feature work | Solo Claude session |
-| Large feature with parallel tasks | Agent team with task delegation |
-| Code review while implementing | Reviewer teammate in parallel |
-| Research + implementation | Researcher gathers context, implementer builds |
-
-### Quality Hooks
-- `TeammateIdle` — Fires when a teammate finishes; validate output before reassigning
-- `TaskCompleted` — Fires when a task is marked complete; exit code 2 blocks completion
-
-See `docs/agent-teams-guide.md` for the comprehensive reference.
 
 ---
 
@@ -546,6 +477,12 @@ For GitHub operations like creating pull requests and managing issues, Claude Co
 ### Permissions
 To streamline your workflow, you can pre-approve safe commands for Claude Code to run without prompting. See [docs/permissions-guide.md](docs/permissions-guide.md) for recommended low-risk permissions organized by platform.
 
+### GitHub Actions
+For automated documentation audits, see [.github/ACTIONS.md](.github/ACTIONS.md) and [.github/SETUP.md](.github/SETUP.md) for setup instructions. Note: The workflow file is provided as `.yml.template` and must be renamed to `.yml` to enable it.
+
+### Response Style Guidelines
+For personal response style preferences, see [docs/response-style-guidelines.md](docs/response-style-guidelines.md) for guidelines you can add to your user-specific `~/.claude/CLAUDE.md`.
+
 ---
 
 ## Getting Help
@@ -587,3 +524,37 @@ To streamline your workflow, you can pre-approve safe commands for Claude Code t
 When both are installed, superpowers handles the development methodology (brainstorming, planning, TDD enforcement) while this template provides project-specific context through modules, workflows, and conventions.
 
 **Security Note:** Superpowers uses aggressive instruction patterns. For proprietary projects, consider version pinning and reviewing updates before adoption. See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide and security considerations.
+
+### Gastown (Optional - Multi-Agent Orchestration)
+
+[Gastown](https://github.com/steveyegge/gastown) is a multi-agent orchestration system that manages coordinated workflows across multiple Claude Code agents. It complements this template:
+
+- **This template** provides per-project documentation and context
+- **Gastown** orchestrates multiple agents across projects with persistent state
+
+**Installation:**
+```bash
+brew install gastown          # Homebrew (recommended)
+npm install -g @gastown/gt   # npm
+go install github.com/steveyegge/gastown/cmd/gt@latest  # Go
+```
+
+**Quick Start:**
+```bash
+gt install ~/gt --git
+gt rig add myproject https://github.com/you/repo.git
+gt crew add yourname --rig myproject
+gt mayor attach
+```
+
+**Key Commands:**
+- `gt mayor attach` - Start the Mayor coordinator
+- `gt rig add` - Add a project repository
+- `gt sling` - Assign work to an agent
+- `gt convoy create` - Create a tracked work bundle
+- `gt agents` - List active agents
+
+**How it works with this template:**
+Gastown operates at the workspace level (orchestrating agents across projects) while this template operates at the project level (structuring documentation and context). Agents spawned by Gastown automatically benefit from cc-bootstrap's `.claude/` documentation when working in a project rig.
+
+**When to use:** Large features, parallel workstreams, complex refactors, or multi-project coordination where multiple agents working simultaneously adds value. See [docs/gastown-integration.md](docs/gastown-integration.md) for the full integration guide.

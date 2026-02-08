@@ -13,7 +13,13 @@
       "Bash(ls:*)",
       "Bash(pwd:*)",
       "Bash(mkdir:*)",
-      "Bash(mkdir -p:*)"
+      "Bash(mkdir -p:*)",
+      "Bash(bd list:*)",
+      "Bash(bd show:*)",
+      "Bash(gt rig:*)",
+      "Bash(gt convoy:*)",
+      "Bash(gt agents:*)",
+      "Bash(gt config show:*)"
     ],
     "deny": [
       "Bash(rm -rf:*)",
@@ -34,29 +40,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Agent teams enabled. Use Shift+Tab for delegate mode. Run /verify-context to check loaded docs.'"
-          }
-        ]
-      }
-    ],
-    "TeammateIdle": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Teammate idle — review output before assigning next task'"
-          }
-        ]
-      }
-    ],
-    "TaskCompleted": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo 'Task marked complete — verify tests pass and conventions followed'"
+            "command": "echo 'Load project context: run /verify-context to check loaded docs'"
           }
         ]
       }
@@ -67,7 +51,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Check permissions-guide.md for safe command patterns'"
+            "command": "echo 'Reminder: check permissions-guide.md for safe command patterns'"
           }
         ]
       }
@@ -78,7 +62,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo 'Session ending — verify all changes committed and teammates cleaned up'"
+            "command": "echo 'Session ending — verify all changes are committed'"
           }
         ]
       }

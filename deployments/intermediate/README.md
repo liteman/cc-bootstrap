@@ -105,4 +105,5 @@ Add these to your `CLAUDE.md` (included in the template):
 
 ## Next Level
 
-For CI/CD automation, audit systems, hooks, and multi-agent orchestration, see the **power-user** deployment in `../power-user/`.
+- **Agent Teams**: For Claude Code's native multi-agent feature (custom subagents, team coordination, delegate mode), see the [Power User deployment](../power-user/).
+- **Kitchen Sink**: For CI/CD automation, audit systems, Gas Town, Beads, and all integrations, see the [Kitchen Sink deployment](../kitchen-sink/).
