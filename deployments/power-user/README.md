@@ -1,120 +1,111 @@
-# Claude Code Bootstrap — Power User
+# Claude Code Bootstrap — Power User (Agent Teams)
 
-Full automation, CI/CD integration, audit systems, session hooks, and multi-agent orchestration. This is a self-contained deployment that includes everything from beginner and intermediate tiers.
+Builds on intermediate with Claude Code's native **agent teams** feature for multi-agent coordination. Spawn specialized teammates that work in parallel — researchers explore, implementers build, reviewers validate — all coordinated through a shared task list and mailbox.
+
+> **Agent teams** is a research preview feature released with Opus 4.6 (February 2026).
 
 ## What You'll Set Up
 
 ```
 your-project/
-├── CLAUDE.md                        # Full-featured with all custom commands
-├── AGENTS.md                        # Multi-agent coordination guide
+├── CLAUDE.md                        # Full-featured with team commands
+├── AGENTS.md                        # Agent teams coordination guide
 ├── .claude/
-│   ├── settings.local.json          # Permissions + hook configurations
-│   ├── settings.json                # Team-shared permissions (committed to git)
+│   ├── settings.local.json          # Permissions + agent teams hooks
+│   ├── settings.json                # Enables agent teams for the whole team
 │   ├── architecture.md              # System design overview
-│   ├── AUDIT_COMMAND.md             # /audit quick reference
+│   ├── agents/                      # Custom subagent definitions
+│   │   ├── _template.md             # Template for new agents
+│   │   ├── researcher.md            # Codebase exploration agent
+│   │   ├── implementer.md           # Code writing agent
+│   │   └── reviewer.md              # Code review agent
 │   ├── modules/                     # On-demand module documentation
-│   ├── workflows/                   # Development + audit workflows
+│   ├── workflows/                   # Development workflows
 │   │   ├── feature-development.md
 │   │   ├── bug-fixes.md
 │   │   ├── refactoring.md
-│   │   └── documentation-audit.md
+│   │   └── agent-team-development.md  # Team-based workflow
 │   ├── conventions/                 # Team coding standards
-│   ├── design/                      # Design methodology
-│   ├── skills/audit/                # Audit skill implementation
-│   └── audit-reports/               # Audit report storage
-├── .github/
-│   ├── workflows/                   # CI/CD automation
-│   │   └── documentation-audit.yml.template
-│   ├── scripts/
-│   │   └── audit-docs.py
-│   ├── audit-config.yml
-│   ├── ACTIONS.md
-│   └── SETUP.md
-└── docs/
-    ├── design/                      # Design guides
-    ├── permissions-guide.md
-    ├── git-setup.md
-    ├── gh-cli-setup.md
-    ├── superpowers-integration.md
-    ├── gastown-integration.md
-    ├── design-integration.md
-    └── response-style-guidelines.md
+│   └── design/                      # Design methodology
+├── docs/
+│   ├── agent-teams-guide.md         # Comprehensive agent teams reference
+│   ├── design/                      # Design guides
+│   ├── permissions-guide.md
+│   ├── git-setup.md
+│   └── gh-cli-setup.md
 ```
 
 ## Quick Start
 
 ```bash
+chmod +x setup.sh
 ./setup.sh /path/to/your-project
 ```
 
 ## What This Tier Adds (Beyond Intermediate)
 
-### GitHub Actions: Automated Documentation Audit
+### Agent Teams Configuration
 
-CI/CD workflow that audits your `.claude/` documentation using the Claude API.
+Agent teams are enabled automatically via `.claude/settings.json`:
 
-**Enable it:**
-```bash
-mv .github/workflows/documentation-audit.yml.template \
-   .github/workflows/documentation-audit.yml
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "teammateMode": "auto"
+}
 ```
 
-**Add your API key:** Settings → Secrets → `ANTHROPIC_API_KEY`
+This means every team member who clones the project gets agent teams enabled.
 
-**What it does:**
-- Monthly scheduled audits (1st of each month)
-- PR checks when `.claude/` files change
-- Creates GitHub issues for critical findings
-- Comments on PRs with audit results
+### Custom Subagent Definitions
 
-### Documentation Audit Skill
+Three example agents in `.claude/agents/`:
 
-The `/audit` command performs comprehensive documentation health checks:
+| Agent | Model | Role | Tools |
+|-------|-------|------|-------|
+| `researcher.md` | Opus | Codebase exploration, documentation reading | Read-only |
+| `implementer.md` | Sonnet | Code writing, test authoring | Full access |
+| `reviewer.md` | Sonnet | Code review, convention checking | Read-only |
 
-```
-/audit          # Full 5-phase audit with remediation
-/audit quick    # Fast scan for critical/high issues only
-```
+Create your own by copying `_template.md`. Subagents use YAML frontmatter to define name, model, description, and available tools.
 
-### Hook Configurations
+### Agent Team Development Workflow
 
-Session hooks enforce project standards automatically:
+A new workflow (`.claude/workflows/agent-team-development.md`) guides team-based development through five phases:
 
-| Hook | When It Fires | Use Case |
-|------|---------------|----------|
-| `SessionStart` | Session begins | Load context reminders |
-| `PreToolUse` | Before any tool call | Guard dangerous operations |
-| `PreCompact` | Before context compaction | Preserve critical state |
-| `UserPromptSubmit` | User sends a message | Inject workflow context |
-| `Stop` | Session ends | Verify cleanup |
+1. **Planning** — Break work into parallel tasks (team lead, solo)
+2. **Research** — Researcher explores codebase and reports findings
+3. **Implementation** — Implementers work on independent tasks in parallel
+4. **Review** — Reviewer validates changes against conventions
+5. **Integration** — Team lead merges and runs final tests
+
+### New Hooks
+
+| Hook | Fires When | Purpose |
+|------|-----------|---------|
+| `TeammateIdle` | Teammate finishes work | Review output before reassigning |
+| `TaskCompleted` | Task marked complete | Quality gate — exit code 2 blocks completion |
+
+These are pre-configured in `.claude/settings.local.json` alongside `SessionStart`, `PreToolUse`, and `Stop`.
+
+### Delegate Mode
+
+Press `Shift+Tab` to toggle the team lead into coordination-only mode. The lead can only spawn teammates, send messages, and manage the task list — no direct implementation.
 
 ### AGENTS.md
 
-Guides any AI agent (not just Claude Code) working in the repo with project context, conventions, and coordination patterns.
-
-### Beads: Git-Backed Issue Tracking (Optional)
-
-```bash
-go install github.com/steveyegge/beads/cmd/bd@latest
-bd init
-```
-
-### Gas Town: Multi-Agent Orchestration (Optional)
-
-```bash
-brew install gastown
-gt install ~/gt --git
-```
+Orients any AI agent entering the repo with agent teams context: how teams are configured, available subagent roles, communication patterns, and quality gates.
 
 ## Setup Steps
 
 1. Run `./setup.sh /path/to/your-project`
-2. Edit `CLAUDE.md` — replace placeholders with your project details
-3. Enable GitHub Actions (rename `.template` to `.yml`, add API key secret)
-4. Configure hooks in `.claude/settings.local.json` for your team
-5. Optional: Initialize Beads for issue tracking
-6. Optional: Set up Gas Town for multi-agent orchestration
+2. Edit `CLAUDE.md` — replace `[BRACKETED]` placeholders with your project details
+3. Customize subagent definitions in `.claude/agents/` for your team's roles
+4. Review hooks in `.claude/settings.local.json`
+5. Start Claude Code: `claude`
+6. Try delegate mode: `Shift+Tab`
 
 ## All Custom Commands
 
@@ -123,20 +114,43 @@ gt install ~/gt --git
 | `/verify-context` | Show loaded documentation |
 | `/load-module <name>` | Load module from `.claude/modules/` |
 | `/load-workflow <name>` | Load workflow guide |
-| `/audit [quick\|full]` | Documentation health check |
+| `/audit [quick\|full]` | Basic documentation review |
 | `/start-design-session` | Begin structured design |
 | `/load-design-phase <phase>` | Load specific design phase |
 | `/finalize-design` | Transition to implementation |
+| `/team-status` | Check agent team status, task list, and mailbox |
+| `/define-agent <name>` | Create a new custom subagent from template |
+
+## Agent Teams Quick Reference
+
+| Action | How |
+|--------|-----|
+| Enable agent teams | Set `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` (pre-configured) |
+| Toggle delegate mode | `Shift+Tab` |
+| Navigate teammates (in-process) | `Shift+Up` / `Shift+Down` |
+| Change display mode | Set `teammateMode` in `.claude/settings.json` |
+| Create custom agent | Copy `.claude/agents/_template.md` |
+| Load team workflow | `/load-workflow agent-team-development` |
+
+## Display Modes
+
+| Mode | Best For | Requirements |
+|------|----------|--------------|
+| `in-process` | Quick tasks, 1-2 teammates | Any terminal |
+| `tmux` | Multiple teammates, visibility | tmux or iTerm2 |
+| `auto` (default) | Let Claude Code decide | None |
+
+## Next Level
+
+Want CI/CD automation, documentation audit systems, Gas Town, or Beads issue tracking? See the [Kitchen Sink deployment](../kitchen-sink/) for the full-featured, experimental option.
 
 ## Documentation Index
 
 | Document | Description |
 |----------|-------------|
+| `docs/agent-teams-guide.md` | Comprehensive agent teams reference |
 | `docs/permissions-guide.md` | Permission patterns by platform |
 | `docs/git-setup.md` | Git configuration guide |
 | `docs/gh-cli-setup.md` | GitHub CLI setup |
-| `docs/superpowers-integration.md` | Superpowers plugin guide |
-| `docs/gastown-integration.md` | Multi-agent orchestration |
-| `docs/design-integration.md` | Design + Superpowers integration |
-| `docs/response-style-guidelines.md` | Personal response preferences |
-| `.github/SETUP.md` | GitHub Actions setup guide |
+| `.claude/workflows/agent-team-development.md` | Team-based development workflow |
+| `.claude/agents/_template.md` | Custom subagent template |
