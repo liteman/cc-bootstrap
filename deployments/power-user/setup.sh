@@ -65,6 +65,11 @@ for f in DESIGN_DOCUMENT ADR_TEMPLATE SESSION_NOTES; do
     copy_if_missing "$SCRIPT_DIR/.claude/design/templates/$f.md" "$TARGET/.claude/design/templates/$f.md" ".claude/design/templates/$f.md"
 done
 
+# === Custom Commands ===
+for f in verify-context load-module load-workflow read-all-context audit start-design-session load-design-phase finalize-design team-status define-agent; do
+    copy_if_missing "$SCRIPT_DIR/.claude/commands/$f.md" "$TARGET/.claude/commands/$f.md" ".claude/commands/$f.md"
+done
+
 # === Custom Subagents ===
 for f in _template researcher implementer reviewer; do
     copy_if_missing "$SCRIPT_DIR/.claude/agents/$f.md" "$TARGET/.claude/agents/$f.md" ".claude/agents/$f.md"

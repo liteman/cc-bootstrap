@@ -65,6 +65,11 @@ for f in DESIGN_DOCUMENT ADR_TEMPLATE SESSION_NOTES; do
     copy_if_missing "$SCRIPT_DIR/.claude/design/templates/$f.md" "$TARGET/.claude/design/templates/$f.md" ".claude/design/templates/$f.md"
 done
 
+# Custom commands
+for f in verify-context load-module load-workflow read-all-context audit start-design-session load-design-phase finalize-design; do
+    copy_if_missing "$SCRIPT_DIR/.claude/commands/$f.md" "$TARGET/.claude/commands/$f.md" ".claude/commands/$f.md"
+done
+
 # Docs
 for f in design-workflow-guide design-phase-reference adr-guide; do
     copy_if_missing "$SCRIPT_DIR/docs/design/$f.md" "$TARGET/docs/design/$f.md" "docs/design/$f.md"

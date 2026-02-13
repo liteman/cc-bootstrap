@@ -119,162 +119,32 @@ For architectural design work:
 
 ## Custom Commands
 
+These commands are defined in `.claude/commands/` and available as `/command-name` in Claude Code.
+
 ### Context Loading
 
-#### /verify-context
-Summarize what documentation I have loaded for this session.
-
-Response format:
-```
-Context loaded:
-- Guides read: [list of .md files]
-- Module focus: [current module]
-- Workflow: [current workflow]
-- Key constraints: [list 3-5 critical rules]
-
-Ready to proceed? Let me know if I should load additional context.
-```
-
-#### /load-module <name>
-Load the specified module guide from `.claude/modules/<name>.md`
-
-Example: `/load-module auth` reads `.claude/modules/auth.md`
-
-#### /load-workflow <name>
-Load the specified workflow guide from `.claude/workflows/<name>.md`
-
-Example: `/load-workflow feature-development`
-
-#### /read-all-context
-For complex work spanning multiple areas, read:
-1. Relevant module guides
-2. Applicable workflow
-3. Related conventions
-
-Use sparingly - only when truly needed for cross-cutting work.
-
-#### /audit [quick|full]
-Perform a basic documentation review. For the full audit skill with CI/CD integration, see the kitchen-sink deployment.
-
-#### /team-status
-Check current agent team status: active teammates, task list, pending messages.
-
-Response format:
-```
-Agent Team Status:
-- Team: [team name or "No active team"]
-- Teammates: [count active / count total]
-- Task List: [pending/in_progress/completed counts]
-- Mailbox: [unread messages count]
-```
-
-#### /define-agent <name>
-Create a new custom subagent definition from the template.
-
-1. Copy `.claude/agents/_template.md` to `.claude/agents/<name>.md`
-2. Ask for: role description, model preference, tool requirements
-3. Fill in the template with provided details
-
-Example: `/define-agent security-reviewer`
+| Command | Description |
+|---------|-------------|
+| `/verify-context` | Summarize loaded session documentation |
+| `/load-module <name>` | Load a module guide from `.claude/modules/<name>.md` |
+| `/load-workflow <name>` | Load a workflow guide from `.claude/workflows/<name>.md` |
+| `/read-all-context` | Load all modules, workflows, and conventions (use sparingly) |
+| `/audit [quick\|full]` | Basic documentation review — reports issues by priority |
 
 ### Design Workflows
 
-#### /start-design-session
-Begin a structured design session with Opus model recommended.
+| Command | Description |
+|---------|-------------|
+| `/start-design-session` | Begin structured design with Opus model; loads design workflow, conventions, and architecture |
+| `/load-design-phase <phase>` | Load a specific phase: exploration, requirements, options, decision, detail, validation |
+| `/finalize-design` | Transition from design to implementation — checks docs, lists ADRs needed |
 
-**When to use**:
-- Before implementation approach is clear
-- Multiple architectural options exist
-- Decision has significant reversal cost
-- Need to explore problem space before solutions
+### Agent Teams
 
-**What it does**:
-1. Loads `.claude/design/workflows/design-session.md`
-2. Loads `.claude/design/conventions/design-thinking.md`
-3. Reads `.claude/architecture.md` for context
-4. Recommends Opus model for design reasoning
-5. Asks which design phase you're in
-6. Sets collaborative thinking mode
-
-**Response format**:
-```
-Design session mode activated.
-
-Loaded:
-- Design session workflow
-- Design thinking conventions
-- Current architecture
-
-Recommendation: Switch to Opus model for deep reasoning
-
-Current phase: [Which phase are you in?]
-⬜ Exploration ⬜ Requirements ⬜ Options ⬜ Decision ⬜ Detail ⬜ Validation
-
-What are we designing today?
-```
-
-#### /load-design-phase <phase>
-Load specific design phase workflow.
-
-**Phases**: exploration, requirements, options, decision, detail, validation
-
-**Example**: `/load-design-phase exploration`
-
-**What it does**:
-1. Reads `.claude/design/workflows/<phase>-phase.md`
-2. Reads `.claude/design/conventions/design-thinking.md`
-3. Summarizes phase goals and key prompts
-4. Enters phase-specific behavior mode
-
-**Response format**:
-```
-Phase loaded: [Phase Name]
-
-Goal: [Phase goal]
-Duration: [Typical duration]
-Key prompts: [list prompts from workflow]
-
-Loaded:
-- [Phase] phase workflow
-- Design thinking conventions
-
-Ready to begin [phase]. [Contextual question to start]
-```
-
-#### /finalize-design
-Transition from design to implementation.
-
-**When to use**: After design validation, before implementation
-
-**What it does**:
-1. Verifies design document exists and is complete
-2. Lists decisions that need ADRs
-3. Identifies `.claude/architecture.md` updates needed
-4. Suggests transition to implementation workflow
-
-**Response format**:
-```
-Design finalization checklist:
-
-Design Document: [✓ Found | ⚠ Not found]
-- Phase: [Current phase]
-- Completeness: [Assessment]
-
-ADRs to create:
-- [ ] [Decision 1]
-- [ ] [Decision 2]
-
-Architecture updates needed:
-- [ ] Update section [X] in .claude/architecture.md
-- [ ] Add new components
-
-Ready to implement?
-1. Create ADRs listed above
-2. Update .claude/architecture.md
-3. Run: /write-plan (Superpowers)
-4. Run: /load-workflow feature-development
-5. Switch to Sonnet model
-```
+| Command | Description |
+|---------|-------------|
+| `/team-status` | Report active team, teammates, task list counts, and mailbox status |
+| `/define-agent <name>` | Create a new subagent from `.claude/agents/_template.md` |
 
 ---
 
@@ -586,4 +456,4 @@ To streamline your workflow, you can pre-approve safe commands for Claude Code t
 **How it works with this template:**
 When both are installed, superpowers handles the development methodology (brainstorming, planning, TDD enforcement) while this template provides project-specific context through modules, workflows, and conventions.
 
-**Security Note:** Superpowers uses aggressive instruction patterns. For proprietary projects, consider version pinning and reviewing updates before adoption. See [docs/superpowers-integration.md](docs/superpowers-integration.md) for detailed integration guide and security considerations.
+**Security Note:** Superpowers uses aggressive instruction patterns. For proprietary projects, consider version pinning and reviewing updates before adoption.
