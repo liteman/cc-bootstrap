@@ -19,10 +19,21 @@
     ],
     "deny": [
       "Bash(rm -rf:*)",
+      "Bash(rm -Rf:*)",
+      "Bash(rm -fr:*)",
+      "Bash(rm -fR:*)",
       "Bash(rm -r:*)",
+      "Bash(rm -R:*)",
+      "Bash(rm --recursive:*)",
+      "Bash(rmdir:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
-      "Bash(git reset --hard:*)"
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git clean -f:*)",
+      "Bash(git checkout -- .:*)"
     ]
   }
 }

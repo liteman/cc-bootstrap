@@ -48,6 +48,7 @@
       "Bash(git push -f:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean -fd:*)",
+      "Bash(git clean -f:*)",
       "Bash(git checkout -- .:*)"
     ],
     "ask": []
